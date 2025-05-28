@@ -9,10 +9,10 @@ export default function AccountButton() {
   }
 
   return (
-    <div className="hidden sm:block">
+    <div className="hidden sm:block relative">
       <button
         onClick={handleClick}
-        className="bg-neutral-200 p-1 rounded-full cursor-pointer relative"
+        className="bg-neutral-200 p-1 rounded-full cursor-pointer"
       >
         <img
           className="w-[15px]"
