@@ -8,7 +8,7 @@ function App() {
       <div className="w-[72px] border-r border-black/10 flex justify-center fixed h-full">
         <Sidebar />
       </div>
-      <div className="bg-blue-100 flex-1 px-4 ml-[72px]">
+      <div className="flex-1 px-4 ml-[72px]">
         <TopBar />
         <Gallery />
       </div>
