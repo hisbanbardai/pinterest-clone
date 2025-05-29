@@ -1,3 +1,5 @@
+import { Link } from "react-router";
+
 const items = [
   {
     id: 1,
@@ -91,10 +93,29 @@ export default function Gallery() {
   );
 }
 
-function GalleryItem({ item }) {
+function GalleryItem({ item }: { item: { id: number; source: string } }) {
   return (
-    <div className="rounded-lg mb-5 overflow-hidden cursor-pointer">
-      <img src={item.source} />
+    <div className="rounded-lg mb-5 overflow-hidden cursor-pointer group relative">
+      <Link to={`/pin/${item.id}`}>
+        <img src={item.source} />
+      </Link>
+
+      <div className="hidden group-hover:flex flex-col items-end justify-between absolute w-full top-0 left-0 bg-black/30 h-full py-3 pr-3 transition-all duration-1000">
+        <div>
+          <button className="text-white bg-red-600 py-3 px-4 rounded-full font-semibold cursor-pointer">
+            Save
+          </button>
+        </div>
+
+        <div className="flex gap-3">
+          <button className="bg-white p-1 rounded-full cursor-pointer">
+            <img src="/general/share.svg" alt="share-pin-icon" />
+          </button>
+          <button className="bg-white p-1 rounded-full cursor-pointer">
+            <img src="/general/more.svg" alt="more-options-icon" />
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
