@@ -2,7 +2,7 @@ import { useState } from "react";
 import UserOptionsModal from "./UserOptionsModal";
 
 export default function AccountButton() {
-  const [isModalOpen, setIsModalOpen] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   function handleClick() {
     setIsModalOpen((prev) => !prev);

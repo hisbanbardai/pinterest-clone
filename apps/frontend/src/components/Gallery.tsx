@@ -83,7 +83,7 @@ const items = [
 
 export default function Gallery() {
   return (
-    <main className="columns-6">
+    <main className="columns-1 sm:columns-2 md:columns-4 lg:columns-6">
       {items.map((item) => (
         <GalleryItem item={item} key={item.id} />
       ))}
