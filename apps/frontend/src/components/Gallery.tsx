@@ -1,3 +1,4 @@
+import { Image } from "@imagekit/react";
 import { Link } from "react-router";
 
 const items = [
@@ -85,7 +86,7 @@ const items = [
 
 export default function Gallery() {
   return (
-    <main className="columns-1 sm:columns-2 md:columns-4 lg:columns-6">
+    <main className="columns-1 sm:columns-2 md:columns-4 lg:columns-7">
       {items.map((item) => (
         <GalleryItem item={item} key={item.id} />
       ))}
@@ -97,7 +98,23 @@ function GalleryItem({ item }: { item: { id: number; source: string } }) {
   return (
     <div className="rounded-lg mb-5 overflow-hidden cursor-pointer group relative">
       <Link to={`/pin/${item.id}`}>
-        <img src={item.source} />
+        {/* <img src={item.source} /> */}
+
+        <Image
+          className="w-full"
+          loading="lazy"
+          responsive={false}
+          urlEndpoint={import.meta.env.VITE_IK_URL_ENDPOINT}
+          src={item.source}
+          transformation={[
+            {
+              quality: 20,
+            },
+            {
+              width: 372,
+            },
+          ]}
+        />
       </Link>
 
       <div className="hidden group-hover:flex flex-col items-end justify-between absolute w-full top-0 left-0 bg-black/30 h-full py-3 pr-3 transition-all duration-1000">
