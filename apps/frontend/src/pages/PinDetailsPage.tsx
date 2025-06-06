@@ -2,11 +2,12 @@ import { Image } from "@imagekit/react";
 import ProfileAvatar from "../components/ProfileAvatar";
 import Comments from "../components/Comments";
 import CommentForm from "../components/CommentForm";
+import { Link } from "react-router";
 
 export default function PinDetailsPage() {
   return (
     <main className="max-h-screen mb-10">
-      <section className="lg:max-w-4xl lg:flex-row md:max-w-[800px] md:flex-row flex-col max-w-2xl flex justify-center mx-auto h-full">
+      <section className="lg:max-w-5xl lg:flex-row md:flex-col flex-col max-w-3xl flex justify-center mx-auto h-full">
         <div className="flex gap-10 flex-1">
           <div className="mt-4">
             <svg
@@ -50,7 +51,9 @@ export default function PinDetailsPage() {
 
           <div className="flex items-center text-[13px] gap-2">
             <ProfileAvatar />
-            <span>John Doe</span>
+            <Link to={"/profile/john"}>
+              <span>John Doe</span>
+            </Link>
           </div>
 
           <div className="flex-1 overflow-y-auto text-sm">
