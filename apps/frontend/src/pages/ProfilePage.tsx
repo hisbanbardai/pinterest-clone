@@ -1,4 +1,6 @@
 import { useState } from "react";
+import Gallery from "../components/Gallery";
+import Collections from "../components/Collections";
 
 export default function ProfilePage() {
   const [galleryType, setGalleryType] = useState("saved");
@@ -34,19 +36,25 @@ export default function ProfilePage() {
         </div>
       </section>
 
-      <section className="flex gap-6 font-semibold">
-        <button
-          onClick={handleClickType}
-          className={`cursor-pointer hover:text-neutral-400 ${galleryType === "created" && activeTypeStyle} pb-1`}
-        >
-          Created
-        </button>
-        <button
-          onClick={handleClickType}
-          className={`cursor-pointer hover:text-neutral-400 ${galleryType === "saved" && activeTypeStyle} pb-1`}
-        >
-          Saved
-        </button>
+      <section className="flex flex-col gap-8">
+        <div className="flex gap-6 justify-center font-semibold">
+          <button
+            onClick={handleClickType}
+            className={`cursor-pointer hover:text-neutral-400 ${galleryType === "created" && activeTypeStyle} pb-1`}
+          >
+            Created
+          </button>
+          <button
+            onClick={handleClickType}
+            className={`cursor-pointer hover:text-neutral-400 ${galleryType === "saved" && activeTypeStyle} pb-1`}
+          >
+            Saved
+          </button>
+        </div>
+
+        {galleryType === "created" && <Gallery />}
+
+        {galleryType === "saved" && <Collections />}
       </section>
     </main>
   );
