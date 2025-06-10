@@ -3,7 +3,7 @@ import { Link } from "react-router";
 
 export default function Collections() {
   return (
-    <div className="columns-7">
+    <div className="columns-7 px-4">
       {Array.from({ length: 14 }).map(() => (
         <Collection />
       ))}

@@ -1,3 +1,5 @@
+import { Link } from "react-router";
+
 const navLinks = [
   {
     href: "/",
@@ -5,7 +7,7 @@ const navLinks = [
     alt: "home icon image",
   },
   {
-    href: "/",
+    href: "/create-pin",
     imageSource: "/general/create.svg",
     alt: "create icon image",
   },
@@ -34,11 +36,11 @@ export default function Sidebar() {
         {navLinks.map((link) => (
           <li
             key={link.alt}
-            className="last:mt-auto flex justify-center w-[48px] h-[48px] hover:bg-neutral-100"
+            className="last:mt-auto flex justify-center w-[48px] h-[48px] hover:bg-neutral-100 cursor-pointer"
           >
-            <a href={link.href} className="flex justify-center">
+            <Link to={link.href} className="flex justify-center">
               <img src={link.imageSource} alt={link.alt} className="w-[20px]" />
-            </a>
+            </Link>
           </li>
         ))}
       </ul>
