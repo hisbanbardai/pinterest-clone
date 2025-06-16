@@ -1,9 +1,12 @@
-import express from "express";
+import express, { Request, Response } from "express";
+import userRouter from "./routes/users.ts";
 
 const app = express();
 const PORT = process.env.PORT || 3002;
 
-app.get("/", (req, res) => {
+app.use("/users", userRouter);
+
+app.get("/", (req: Request, res: Response) => {
   res.json({ msg: "Hello world" });
   return;
 });
