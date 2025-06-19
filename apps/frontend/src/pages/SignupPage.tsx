@@ -10,22 +10,22 @@ export default function SignupPage() {
     >
       <form className="flex flex-col gap-5">
         <div className="flex flex-col gap-2">
-          <label htmlFor="username">Username</label>
+          <label htmlFor="firstname">First Name</label>
           <input
             type="text"
-            name="username"
-            id="username"
+            name="firstname"
+            id="firstname"
             className="border-black/15 rounded-xl border-2 text-xs py-2 px-3"
-            placeholder="john123"
+            placeholder="john"
           />
         </div>
 
         <div className="flex flex-col gap-2">
-          <label htmlFor="email">Name</label>
+          <label htmlFor="lastname">Last Name</label>
           <input
             type="text"
-            name="name"
-            id="name"
+            name="lastname"
+            id="lastname"
             className="border-black/15 rounded-xl border-2 text-xs py-2 px-3"
             placeholder="John Doe"
           />
