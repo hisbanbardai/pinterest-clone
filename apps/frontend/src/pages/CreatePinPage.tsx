@@ -1,3 +1,5 @@
+import { Button } from "@repo/ui/button";
+
 export default function CreatePinPage() {
   return (
     <main className="min-h-screen overflow-y-auto mb-10">
@@ -8,6 +10,7 @@ export default function CreatePinPage() {
           <button className="text-white bg-red-600 py-3 px-4 rounded-full cursor-pointer">
             Publish
           </button>
+          <Button />
         </div>
       </div>
 

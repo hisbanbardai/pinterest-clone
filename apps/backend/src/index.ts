@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import userRouter from "./routes/users.ts";
 import ImageKit from "imagekit";
+import { a } from "@repo/zod/types";
 
 const app = express();
 const PORT = process.env.PORT || 3002;
@@ -10,6 +11,8 @@ const imagekit = new ImageKit({
   publicKey: process.env.IMAGEKIT_PUBLIC_KEY || "",
   privateKey: process.env.IMAGEKIT_PRIVATE_KEY || "",
 });
+
+console.log(a);
 
 // allow cross-origin requests
 app.use(function (req, res, next) {
