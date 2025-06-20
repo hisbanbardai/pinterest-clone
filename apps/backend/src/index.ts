@@ -1,7 +1,6 @@
 import express, { Request, Response } from "express";
 import userRouter from "./routes/users.ts";
 import ImageKit from "imagekit";
-import { a } from "@repo/zod/types";
 
 const app = express();
 const PORT = process.env.PORT || 3002;
@@ -12,8 +11,6 @@ const imagekit = new ImageKit({
   privateKey: process.env.IMAGEKIT_PRIVATE_KEY || "",
 });
 
-console.log(a);
-
 // allow cross-origin requests
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -23,6 +20,8 @@ app.use(function (req, res, next) {
   );
   next();
 });
+
+app.use(express.json());
 
 app.use("/users", userRouter);
 
