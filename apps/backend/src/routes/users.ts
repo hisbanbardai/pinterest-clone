@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import prisma from "../lib/prisma.ts";
 import { signupSchema } from "@repo/zod/types";
+import { hashPassword } from "../lib/passwordHashing.ts";
 
 const router = express.Router();
 
@@ -29,9 +30,16 @@ router.post("/signup", async (req: Request, res: Response): Promise<any> => {
         .json({ message: "User with that email address already exists" });
     }
 
+    //hash password
+    const password = result.data.password;
+    const hashedPassword = await hashPassword(password);
+
     //create user in the db
     await prisma.users.create({
-      data: result.data!,
+      data: {
+        ...result.data,
+        password: hashedPassword,
+      },
     });
 
     res.status(201).json({ message: "User created successfully" });

@@ -28,6 +28,7 @@
   "license": "ISC",
   "type": "module",
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/express": "^5.0.3",
     "prisma": "^6.9.0",
     "tsup": "^8.5.0",
@@ -36,8 +37,9 @@
   "dependencies": {
     "@prisma/client": "^6.9.0",
     "@prisma/extension-accelerate": "^2.0.1",
+    "@repo/zod": "*",
+    "bcrypt": "^6.0.0",
     "express": "^5.1.0",
-    "imagekit": "^6.0.0",
-    "@repo/zod": "*"
+    "imagekit": "^6.0.0"
   }
 }
