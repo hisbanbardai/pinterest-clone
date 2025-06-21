@@ -1,4 +1,5 @@
 import { Image } from "@imagekit/react";
+import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
 
 const items = [
@@ -84,7 +85,12 @@ const items = [
   },
 ];
 
+function fetchPins() {}
+
 export default function Gallery() {
+  // Queries
+  const query = useQuery({ queryKey: ["pins"], queryFn: getTodos });
+
   return (
     <main className="columns-1 sm:columns-2 md:columns-4 lg:columns-7 px-4">
       {items.map((item) => (
