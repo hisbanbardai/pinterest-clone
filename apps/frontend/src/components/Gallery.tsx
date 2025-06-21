@@ -1,106 +1,113 @@
 import { Image } from "@imagekit/react";
 import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import { Link } from "react-router";
 
-const items = [
-  {
-    id: 1,
-    source: "/pins/pin1.jpeg",
-  },
-  {
-    id: 2,
-    source: "/pins/pin2.jpeg",
-  },
-  {
-    id: 3,
-    source: "/pins/pin3.jpeg",
-  },
-  {
-    id: 4,
-    source: "/pins/pin4.jpeg",
-  },
-  {
-    id: 5,
-    source: "/pins/pin5.jpeg",
-  },
-  {
-    id: 6,
-    source: "/pins/pin6.jpeg",
-  },
-  {
-    id: 7,
-    source: "/pins/pin7.jpeg",
-  },
-  {
-    id: 8,
-    source: "/pins/pin8.jpeg",
-  },
-  {
-    id: 9,
-    source: "/pins/pin9.jpeg",
-  },
-  {
-    id: 10,
-    source: "/pins/pin10.jpeg",
-  },
-  {
-    id: 11,
-    source: "/pins/pin11.jpeg",
-  },
-  {
-    id: 12,
-    source: "/pins/pin12.jpeg",
-  },
-  {
-    id: 13,
-    source: "/pins/pin13.jpeg",
-  },
-  {
-    id: 14,
-    source: "/pins/pin14.jpeg",
-  },
-  {
-    id: 15,
-    source: "/pins/pin15.jpeg",
-  },
-  {
-    id: 16,
-    source: "/pins/pin16.jpeg",
-  },
-  {
-    id: 17,
-    source: "/pins/pin17.jpeg",
-  },
-  {
-    id: 18,
-    source: "/pins/pin18.jpeg",
-  },
-  {
-    id: 19,
-    source: "/pins/pin19.jpeg",
-  },
-  {
-    id: 20,
-    source: "/pins/pin20.jpeg",
-  },
-];
+// const items = [
+//   {
+//     id: 1,
+//     source: "/pins/pin1.jpeg",
+//   },
+//   {
+//     id: 2,
+//     source: "/pins/pin2.jpeg",
+//   },
+//   {
+//     id: 3,
+//     source: "/pins/pin3.jpeg",
+//   },
+//   {
+//     id: 4,
+//     source: "/pins/pin4.jpeg",
+//   },
+//   {
+//     id: 5,
+//     source: "/pins/pin5.jpeg",
+//   },
+//   {
+//     id: 6,
+//     source: "/pins/pin6.jpeg",
+//   },
+//   {
+//     id: 7,
+//     source: "/pins/pin7.jpeg",
+//   },
+//   {
+//     id: 8,
+//     source: "/pins/pin8.jpeg",
+//   },
+//   {
+//     id: 9,
+//     source: "/pins/pin9.jpeg",
+//   },
+//   {
+//     id: 10,
+//     source: "/pins/pin10.jpeg",
+//   },
+//   {
+//     id: 11,
+//     source: "/pins/pin11.jpeg",
+//   },
+//   {
+//     id: 12,
+//     source: "/pins/pin12.jpeg",
+//   },
+//   {
+//     id: 13,
+//     source: "/pins/pin13.jpeg",
+//   },
+//   {
+//     id: 14,
+//     source: "/pins/pin14.jpeg",
+//   },
+//   {
+//     id: 15,
+//     source: "/pins/pin15.jpeg",
+//   },
+//   {
+//     id: 16,
+//     source: "/pins/pin16.jpeg",
+//   },
+//   {
+//     id: 17,
+//     source: "/pins/pin17.jpeg",
+//   },
+//   {
+//     id: 18,
+//     source: "/pins/pin18.jpeg",
+//   },
+//   {
+//     id: 19,
+//     source: "/pins/pin19.jpeg",
+//   },
+//   {
+//     id: 20,
+//     source: "/pins/pin20.jpeg",
+//   },
+// ];
 
-function fetchPins() {}
+async function fetchPins() {
+  const { data } = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/pins`);
+  const { pins } = data;
+  return pins;
+}
 
 export default function Gallery() {
   // Queries
-  const query = useQuery({ queryKey: ["pins"], queryFn: getTodos });
+  const { data, error } = useQuery({ queryKey: ["pins"], queryFn: fetchPins });
+
+  if (error) {
+    return "An error occurred: " + error.message;
+  }
 
   return (
     <main className="columns-1 sm:columns-2 md:columns-4 lg:columns-7 px-4">
-      {items.map((item) => (
-        <GalleryItem item={item} key={item.id} />
-      ))}
+      {data?.map((item) => <GalleryItem item={item} key={item.id} />)}
     </main>
   );
 }
 
-function GalleryItem({ item }: { item: { id: number; source: string } }) {
+function GalleryItem({ item }) {
   return (
     <div className="rounded-lg mb-5 overflow-hidden cursor-pointer group relative">
       <Link to={`/pin/${item.id}`}>
@@ -109,7 +116,7 @@ function GalleryItem({ item }: { item: { id: number; source: string } }) {
           loading="lazy"
           responsive={false}
           urlEndpoint={import.meta.env.VITE_IK_URL_ENDPOINT}
-          src={item.source}
+          src={item.imageUrl}
           transformation={[
             {
               quality: 20,
