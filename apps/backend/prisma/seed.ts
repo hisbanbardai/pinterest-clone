@@ -50,7 +50,7 @@ async function main() {
   console.log(`Start seeding pins data ...`);
   const pins = [];
 
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 100; i++) {
     const mediaSize = Math.random() < 0.5 ? "800/1200" : "800/600";
     const result = await prisma.pins.create({
       data: {
@@ -75,7 +75,7 @@ async function main() {
       data: {
         text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry",
         userId: `${users[Math.ceil(Math.random() * 4)].id}`,
-        pinId: `${pins[Math.ceil(Math.random() * 9)].id}`,
+        pinId: `${pins[Math.ceil(Math.random() * 9)]?.id}`,
       },
     });
   }

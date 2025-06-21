@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import userRouter from "./routes/users.ts";
+import pinsRouter from "./routes/pins.ts";
 import ImageKit from "imagekit";
 
 const app = express();
@@ -24,6 +25,7 @@ app.use(function (req, res, next) {
 app.use(express.json());
 
 app.use("/users", userRouter);
+app.use("/pins", pinsRouter);
 
 app.get("/", (req: Request, res: Response) => {
   res.json({ msg: "Hello world" });
