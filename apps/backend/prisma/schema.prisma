@@ -37,9 +37,10 @@ model Pins {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  //FK
   userId String
   user Users @relation(fields: [userId], references: [id])
-
+  //FK
   boardId String
   board Boards? @relation(fields: [boardId], references: [id])
 
@@ -52,6 +53,7 @@ model Boards {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  //FK
   userId String
   user Users @relation(fields: [userId], references: [id])
 
@@ -65,9 +67,10 @@ model Comments {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  //FK
   userId String
   user Users @relation(fields: [userId], references: [id])
-
+  //FK
   pinId String
   pin Pins @relation(fields: [pinId], references: [id])
 }
