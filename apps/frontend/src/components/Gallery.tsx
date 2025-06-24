@@ -1,5 +1,5 @@
 import { Image } from "@imagekit/react";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Link } from "react-router";
 
@@ -86,20 +86,33 @@ import { Link } from "react-router";
 //   },
 // ];
 
-async function fetchPins() {
-  const { data } = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/pins`);
-  const { pins } = data;
-  return pins;
+const LIMIT = 10;
+
+async function fetchPins({ pageParam }) {
+  console.log(pageParam);
+  const { data } = await axios.get(
+    `${import.meta.env.VITE_API_BASE_URL}/pins?limit=${LIMIT}&offset=${pageParam}`
+  );
+  console.log(data);
+  return data;
 }
 
 export default function Gallery() {
   // Queries
-  const { data, error, isLoading } = useQuery({
+  // const { data, error, isLoading } = useQuery({
+  //   queryKey: ["pins"],
+  //   queryFn: fetchPins,
+  //   staleTime: 1000 * 60 * 60,
+  //   refetchOnWindowFocus: false,
+  //   retry: false,
+  // });
+
+  const { data, error, isLoading, fetchNextPage } = useInfiniteQuery({
     queryKey: ["pins"],
     queryFn: fetchPins,
-    staleTime: 1000 * 60 * 60,
-    refetchOnWindowFocus: false,
-    retry: false,
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, pages) =>
+      lastPage.pins.length < LIMIT ? undefined : lastPage.nextOffset,
   });
 
   if (error) {
@@ -130,11 +143,13 @@ export default function Gallery() {
     );
   }
 
-  return (
-    <main className="columns-1 sm:columns-2 md:columns-4 lg:columns-7 px-4">
-      {data?.map((item) => <GalleryItem item={item} key={item.id} />)}
-    </main>
-  );
+  // return (
+  //   <main className="columns-1 sm:columns-2 md:columns-4 lg:columns-7 px-4">
+  //     {data?.map((item) => <GalleryItem item={item} key={item.id} />)}
+  //   </main>
+  // );
+
+  return <button onClick={() => fetchNextPage()}>Load more</button>;
 }
 
 function GalleryItem({ item }) {
@@ -177,3 +192,35 @@ function GalleryItem({ item }) {
     </div>
   );
 }
+
+/*
+How useInfiniteQuery Works Under the Hood:
+1. Initial fetch:
+
+    React Query calls your queryFn with pageParam set to initialPageParam (usually 0 or whatever you provide).
+
+    Your queryFn fetches that "page" of data from the backend and returns it.
+
+2. Storing pages:
+
+    The response of each fetch is stored in an array called pages. So pages[0] is the first page, pages[1] the second, etc.
+
+3. Determining if more data exists:
+
+    After each fetch, React Query calls your getNextPageParam function with:
+
+      lastPage: the data you just fetched pages: all pages fetched so far
+
+    Your function decides what the next pageParam should be (e.g., the next offset i.e. skip in prisma).
+
+    If getNextPageParam returns a value, React Query knows it can fetch another page when triggered.
+
+    If it returns undefined, React Query knows there are no more pages.
+
+4. Fetching next page:
+
+    React Query does NOT automatically fetch the next page right away. It waits for you to trigger it via fetchNextPage() (or via something like a scroll event).
+
+    When you call fetchNextPage(), React Query uses the last pageParam returned from getNextPageParam and calls queryFn again with that.
+
+*/
