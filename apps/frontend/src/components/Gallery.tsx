@@ -1,6 +1,7 @@
 import { Image } from "@imagekit/react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { useEffect, useRef } from "react";
 import { Link } from "react-router";
 
 // const items = [
@@ -88,12 +89,19 @@ import { Link } from "react-router";
 
 const LIMIT = 10;
 
+// below function would work if we use offset based pagination
+
+// async function fetchPins({ pageParam }) {
+//   const { data } = await axios.get(
+//     `${import.meta.env.VITE_API_BASE_URL}/pins?limit=${LIMIT}&offset=${pageParam}`
+//   );
+//   return data;
+// }
+
 async function fetchPins({ pageParam }) {
-  console.log(pageParam);
   const { data } = await axios.get(
-    `${import.meta.env.VITE_API_BASE_URL}/pins?limit=${LIMIT}&offset=${pageParam}`
+    `${import.meta.env.VITE_API_BASE_URL}/pins?limit=${LIMIT}&cursor=${pageParam}`
   );
-  console.log(data);
   return data;
 }
 
@@ -107,13 +115,39 @@ export default function Gallery() {
   //   retry: false,
   // });
 
-  const { data, error, isLoading, fetchNextPage } = useInfiniteQuery({
-    queryKey: ["pins"],
-    queryFn: fetchPins,
-    initialPageParam: 0,
-    getNextPageParam: (lastPage, pages) =>
-      lastPage.pins.length < LIMIT ? undefined : lastPage.nextOffset,
-  });
+  const { data, error, isLoading, fetchNextPage, hasNextPage } =
+    useInfiniteQuery({
+      queryKey: ["pins"],
+      queryFn: fetchPins,
+      initialPageParam: null,
+      getNextPageParam: (lastPage) =>
+        lastPage.pins.length < LIMIT ? undefined : lastPage.cursor,
+    });
+
+  const observeDivRef = useRef(null);
+
+  useEffect(() => {
+    const options = {
+      root: null,
+      rootMargin: "0px",
+      threshold: 0.25,
+    };
+
+    function handleIntersect(entries, observer) {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && hasNextPage) {
+          fetchNextPage();
+        }
+      });
+    }
+
+    const observer = new IntersectionObserver(handleIntersect, options);
+    if (observeDivRef.current) {
+      observer.observe(observeDivRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [fetchNextPage, hasNextPage]);
 
   if (error) {
     return "An error occurred: " + error.message;
@@ -143,13 +177,17 @@ export default function Gallery() {
     );
   }
 
-  // return (
-  //   <main className="columns-1 sm:columns-2 md:columns-4 lg:columns-7 px-4">
-  //     {data?.map((item) => <GalleryItem item={item} key={item.id} />)}
-  //   </main>
-  // );
-
-  return <button onClick={() => fetchNextPage()}>Load more</button>;
+  return (
+    <>
+      <main className="columns-1 sm:columns-2 md:columns-4 lg:columns-7 px-4">
+        {data?.pages.flatMap((page) =>
+          page.pins.map((pin) => <GalleryItem item={pin} key={pin.id} />)
+        )}
+      </main>
+      <div ref={observeDivRef} className="h-[50px]"></div>
+      {!hasNextPage && <div>All posts are loaded!!</div>}
+    </>
+  );
 }
 
 function GalleryItem({ item }) {
@@ -209,7 +247,8 @@ How useInfiniteQuery Works Under the Hood:
 
     After each fetch, React Query calls your getNextPageParam function with:
 
-      lastPage: the data you just fetched pages: all pages fetched so far
+      lastPage: the data you just fetched
+      pages: all pages fetched so far
 
     Your function decides what the next pageParam should be (e.g., the next offset i.e. skip in prisma).
 
