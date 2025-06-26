@@ -1,8 +1,6 @@
 import { Image } from "@imagekit/react";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { useEffect, useRef } from "react";
 import { Link } from "react-router";
+import usePins from "../hooks/usePins";
 
 // const items = [
 //   {
@@ -87,67 +85,8 @@ import { Link } from "react-router";
 //   },
 // ];
 
-const LIMIT = 10;
-
-// below function would work if we use offset based pagination
-
-// async function fetchPins({ pageParam }) {
-//   const { data } = await axios.get(
-//     `${import.meta.env.VITE_API_BASE_URL}/pins?limit=${LIMIT}&offset=${pageParam}`
-//   );
-//   return data;
-// }
-
-async function fetchPins({ pageParam }) {
-  const { data } = await axios.get(
-    `${import.meta.env.VITE_API_BASE_URL}/pins?limit=${LIMIT}&cursor=${pageParam}`
-  );
-  return data;
-}
-
 export default function Gallery() {
-  // Queries
-  // const { data, error, isLoading } = useQuery({
-  //   queryKey: ["pins"],
-  //   queryFn: fetchPins,
-  //   staleTime: 1000 * 60 * 60,
-  //   refetchOnWindowFocus: false,
-  //   retry: false,
-  // });
-
-  const { data, error, isLoading, fetchNextPage, hasNextPage } =
-    useInfiniteQuery({
-      queryKey: ["pins"],
-      queryFn: fetchPins,
-      initialPageParam: null,
-      getNextPageParam: (lastPage) =>
-        lastPage.pins.length < LIMIT ? undefined : lastPage.cursor,
-    });
-
-  const observeDivRef = useRef(null);
-
-  useEffect(() => {
-    const options = {
-      root: null,
-      rootMargin: "0px",
-      threshold: 0.25,
-    };
-
-    function handleIntersect(entries, observer) {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting && hasNextPage) {
-          fetchNextPage();
-        }
-      });
-    }
-
-    const observer = new IntersectionObserver(handleIntersect, options);
-    if (observeDivRef.current) {
-      observer.observe(observeDivRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, [fetchNextPage, hasNextPage]);
+  const { error, isLoading, hasNextPage, data, observeDivRef } = usePins();
 
   if (error) {
     return "An error occurred: " + error.message;
@@ -156,10 +95,11 @@ export default function Gallery() {
   if (isLoading) {
     return (
       <div className="columns-1 sm:columns-2 md:columns-4 lg:columns-7 px-4">
-        {Array.from({ length: 20 }).map(() => (
+        {Array.from({ length: 20 }).map((_, index) => (
           <div
             role="status"
             className="flex items-center justify-center h-56 max-w-sm bg-gray-300 rounded-lg animate-pulse dark:bg-gray-700 mb-4"
+            key={index}
           >
             <svg
               className="w-10 h-10 text-gray-200 dark:text-gray-600"
@@ -185,7 +125,15 @@ export default function Gallery() {
         )}
       </main>
       <div ref={observeDivRef} className="h-[50px]"></div>
-      {!hasNextPage && <div>All posts are loaded!!</div>}
+      {!hasNextPage ? (
+        <div className="text-center font-semibold text-lg mb-5">
+          All posts are loaded!!
+        </div>
+      ) : (
+        <div className="text-center font-semibold text-lg mb-5">
+          Loading more posts...
+        </div>
+      )}
     </>
   );
 }
@@ -230,36 +178,3 @@ function GalleryItem({ item }) {
     </div>
   );
 }
-
-/*
-How useInfiniteQuery Works Under the Hood:
-1. Initial fetch:
-
-    React Query calls your queryFn with pageParam set to initialPageParam (usually 0 or whatever you provide).
-
-    Your queryFn fetches that "page" of data from the backend and returns it.
-
-2. Storing pages:
-
-    The response of each fetch is stored in an array called pages. So pages[0] is the first page, pages[1] the second, etc.
-
-3. Determining if more data exists:
-
-    After each fetch, React Query calls your getNextPageParam function with:
-
-      lastPage: the data you just fetched
-      pages: all pages fetched so far
-
-    Your function decides what the next pageParam should be (e.g., the next offset i.e. skip in prisma).
-
-    If getNextPageParam returns a value, React Query knows it can fetch another page when triggered.
-
-    If it returns undefined, React Query knows there are no more pages.
-
-4. Fetching next page:
-
-    React Query does NOT automatically fetch the next page right away. It waits for you to trigger it via fetchNextPage() (or via something like a scroll event).
-
-    When you call fetchNextPage(), React Query uses the last pageParam returned from getNextPageParam and calls queryFn again with that.
-
-*/
