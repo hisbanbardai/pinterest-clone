@@ -38,4 +38,36 @@ router.get("/", async (req: Request, res: Response) => {
   return;
 });
 
+router.get("/:id", async (req: Request, res: Response) => {
+  const pinId = req.params.id;
+
+  if (!pinId?.trim()) {
+    res.status(400).json({ message: "Invalid pin id" });
+    return;
+  }
+
+  try {
+    const existingPin = await prisma.pins.findUnique({
+      where: {
+        id: pinId,
+      },
+      include: {
+        user: true,
+      },
+    });
+
+    if (!existingPin) {
+      res.status(404).json({ message: "No pin found against that id" });
+      return;
+    }
+
+    res.status(200).json({ pin: existingPin, user: existingPin.user });
+    return;
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+    return;
+  }
+});
+
 export default router;

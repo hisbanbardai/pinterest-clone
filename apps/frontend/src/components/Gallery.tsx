@@ -92,7 +92,7 @@ export default function Gallery() {
     usePins(searchText);
 
   if (error) {
-    return "An error occurred: " + error.message;
+    return <p className="text-red-500">An error occurred: {error.message}</p>;
   }
 
   if (isLoading) {
