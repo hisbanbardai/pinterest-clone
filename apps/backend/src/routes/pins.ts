@@ -8,9 +8,16 @@ router.get("/", async (req: Request, res: Response) => {
   const limit = Number(req.query.limit) || 10;
   const cursor =
     req.query.cursor !== "null" ? req.query.cursor?.toString() : "";
+  const search = req.query.search;
 
   const queryConfig: Prisma.PinsFindManyArgs = {
     take: limit,
+    where: {
+      title: {
+        contains: search?.toString() || "",
+        mode: "insensitive",
+      },
+    },
     orderBy: {
       createdAt: "desc",
     },

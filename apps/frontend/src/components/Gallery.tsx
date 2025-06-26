@@ -1,6 +1,7 @@
 import { Image } from "@imagekit/react";
 import { Link } from "react-router";
 import usePins from "../hooks/usePins";
+import useSearchQueryContext from "../hooks/useSearchQueryContext";
 
 // const items = [
 //   {
@@ -86,7 +87,9 @@ import usePins from "../hooks/usePins";
 // ];
 
 export default function Gallery() {
-  const { error, isLoading, hasNextPage, data, observeDivRef } = usePins();
+  const { searchText } = useSearchQueryContext();
+  const { error, isLoading, hasNextPage, data, observeDivRef } =
+    usePins(searchText);
 
   if (error) {
     return "An error occurred: " + error.message;
@@ -113,6 +116,14 @@ export default function Gallery() {
             <span className="sr-only">Loading...</span>
           </div>
         ))}
+      </div>
+    );
+  }
+
+  if (data?.pages[0].pins.length === 0) {
+    return (
+      <div className="text-center font-semibold text-lg mb-5">
+        No related posts!!
       </div>
     );
   }

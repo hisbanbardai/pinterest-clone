@@ -7,21 +7,24 @@ import SigninPage from "./pages/SigninPage";
 import SignupPage from "./pages/SignupPage";
 import HomePage from "./pages/HomePage";
 import ImageKitUpload from "./components/ImageKitUpload";
+import SearchQueryContextProvider from "./contexts/SearchQueryContextProvider";
 
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route element={<MainLayout />}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/create-pin" element={<CreatePinPage />} />
-          <Route path="/profile/:username" element={<ProfilePage />} />
-          <Route path="/pin/:id" element={<PinDetailsPage />} />
-          <Route path="/test" element={<ImageKitUpload />} />
-        </Route>
-        <Route path="/signin" element={<SigninPage />} />
-        <Route path="/signup" element={<SignupPage />} />
-      </Routes>
+      <SearchQueryContextProvider>
+        <Routes>
+          <Route element={<MainLayout />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/create-pin" element={<CreatePinPage />} />
+            <Route path="/profile/:username" element={<ProfilePage />} />
+            <Route path="/pin/:id" element={<PinDetailsPage />} />
+            <Route path="/test" element={<ImageKitUpload />} />
+          </Route>
+          <Route path="/signin" element={<SigninPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+        </Routes>
+      </SearchQueryContextProvider>
     </BrowserRouter>
   );
 }

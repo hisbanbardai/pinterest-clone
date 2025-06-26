@@ -2,7 +2,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useRef } from "react";
 
-export default function usePins() {
+export default function usePins(searchText: string) {
   const LIMIT = 21;
 
   // below function would work if we use offset based pagination
@@ -14,9 +14,9 @@ export default function usePins() {
   //   return data;
   // }
 
-  async function fetchPins({ pageParam }) {
+  async function fetchPins({ pageParam, searchText }) {
     const { data } = await axios.get(
-      `${import.meta.env.VITE_API_BASE_URL}/pins?limit=${LIMIT}&cursor=${pageParam}`
+      `${import.meta.env.VITE_API_BASE_URL}/pins?limit=${LIMIT}&cursor=${pageParam}&search=${searchText}`
     );
     return data;
   }
@@ -32,8 +32,8 @@ export default function usePins() {
 
   const { data, error, isLoading, fetchNextPage, hasNextPage } =
     useInfiniteQuery({
-      queryKey: ["pins"],
-      queryFn: fetchPins,
+      queryKey: ["pins", searchText],
+      queryFn: ({ pageParam }) => fetchPins({ pageParam, searchText }),
       initialPageParam: null,
       getNextPageParam: (lastPage) =>
         lastPage.pins.length < LIMIT ? undefined : lastPage.cursor,
