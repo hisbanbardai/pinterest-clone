@@ -1,8 +1,8 @@
 import z from "zod";
 
 export const signupSchema = z.object({
-  firstName: z.string(),
-  lastName: z.string(),
+  username: z.string(),
+  name: z.string(),
   email: z.string().email({ message: "Invalid email address" }),
   password: z
     .string()

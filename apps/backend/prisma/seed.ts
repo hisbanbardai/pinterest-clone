@@ -18,8 +18,8 @@ async function main() {
   for (let i = 1; i <= 5; i++) {
     const result = await prisma.users.create({
       data: {
-        firstName: `User`,
-        lastName: `${i}`,
+        username: `user${i}`,
+        name: `User ${i}`,
         email: `user${i}@test.com`,
         password:
           "$2b$10$JDT5y9kQUlfEBMUmmDpXxeN7iaAPWEK/hvmdy2VgdaHgyR5j1QbV2",
@@ -37,7 +37,7 @@ async function main() {
   for (let i = 0; i < 5; i++) {
     const result = await prisma.boards.create({
       data: {
-        title: `Board of user ${users[i].lastName}`,
+        title: `Board of user ${users[i].username}`,
         userId: users[i].id,
       },
     });
