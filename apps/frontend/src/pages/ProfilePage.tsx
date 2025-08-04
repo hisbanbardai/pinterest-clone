@@ -9,8 +9,6 @@ export default function ProfilePage() {
   const { username } = useParams();
   const { data, isLoading, error } = useProfile(username);
 
-  console.log(data);
-
   const activeTypeStyle = "border-b-3 border-black";
 
   function handleClickType() {
@@ -89,7 +87,7 @@ export default function ProfilePage() {
           </button>
         </div>
 
-        {galleryType === "created" && <Gallery />}
+        {galleryType === "created" && <Gallery userId={data.user.id} />}
 
         {galleryType === "saved" && <Collections />}
       </section>

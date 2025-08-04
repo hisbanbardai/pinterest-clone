@@ -86,10 +86,12 @@ import useSearchQueryContext from "../hooks/useSearchQueryContext";
 //   },
 // ];
 
-export default function Gallery() {
+export default function Gallery({ userId }: { userId: string }) {
   const { searchText } = useSearchQueryContext();
-  const { error, isLoading, hasNextPage, data, observeDivRef } =
-    usePins(searchText);
+  const { error, isLoading, hasNextPage, data, observeDivRef } = usePins(
+    searchText,
+    userId
+  );
 
   if (error) {
     return <p className="text-red-500">An error occurred: {error.message}</p>;

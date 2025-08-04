@@ -2,7 +2,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useRef } from "react";
 
-export default function usePins(searchText: string) {
+export default function usePins(searchText: string, userId: string) {
   const LIMIT = 21;
 
   // below function would work if we use offset based pagination
@@ -14,9 +14,17 @@ export default function usePins(searchText: string) {
   //   return data;
   // }
 
-  async function fetchPins({ pageParam, searchText }) {
+  async function fetchPins({
+    pageParam,
+    searchText,
+    userId,
+  }: {
+    pageParam: string;
+    searchText: string;
+    userId: string;
+  }) {
     const { data } = await axios.get(
-      `${import.meta.env.VITE_API_BASE_URL}/pins?limit=${LIMIT}&cursor=${pageParam}&search=${searchText}`
+      `${import.meta.env.VITE_API_BASE_URL}/pins?limit=${LIMIT}&cursor=${pageParam}&search=${searchText}&userId=${userId}`
     );
     return data;
   }
@@ -32,9 +40,9 @@ export default function usePins(searchText: string) {
 
   const { data, error, isLoading, fetchNextPage, hasNextPage } =
     useInfiniteQuery({
-      queryKey: ["pins", searchText],
+      queryKey: [searchText, userId],
       //we are passing the pageParam as an argument below because React Query manages the pageParam internally. React Query calls your function and passes the current pageParam as an argument. Your function i.e. fetchPins receives it and uses it.
-      queryFn: ({ pageParam }) => fetchPins({ pageParam, searchText }),
+      queryFn: ({ pageParam }) => fetchPins({ pageParam, searchText, userId }),
       initialPageParam: null,
       getNextPageParam: (lastPage) =>
         lastPage.pins.length < LIMIT ? undefined : lastPage.cursor,
