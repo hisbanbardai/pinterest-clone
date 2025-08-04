@@ -1,4 +1,4 @@
-export default function ProfileAvatar({ image }: { image: string }) {
+export default function ProfileAvatar({ image }: { image?: string }) {
   return (
     <div className="cursor-pointer hidden sm:block">
       <img

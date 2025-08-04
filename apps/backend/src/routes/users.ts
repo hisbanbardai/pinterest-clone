@@ -51,4 +51,31 @@ router.post("/signup", async (req: Request, res: Response): Promise<any> => {
   }
 });
 
+router.get("/:username", async (req, res) => {
+  try {
+    const username = req.params.username;
+
+    const existingUser = await prisma.users.findFirst({
+      where: {
+        username,
+      },
+      omit: {
+        password: true,
+      },
+    });
+
+    if (!existingUser) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    res.status(200).json({ user: existingUser });
+    return;
+  } catch (error) {
+    console.error("Error finding user:", error);
+    res.status(500).json({ error: "Internal server error" });
+    return;
+  }
+});
+
 export default router;

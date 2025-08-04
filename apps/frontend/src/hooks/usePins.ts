@@ -33,6 +33,7 @@ export default function usePins(searchText: string) {
   const { data, error, isLoading, fetchNextPage, hasNextPage } =
     useInfiniteQuery({
       queryKey: ["pins", searchText],
+      //we are passing the pageParam as an argument below because React Query manages the pageParam internally. React Query calls your function and passes the current pageParam as an argument. Your function i.e. fetchPins receives it and uses it.
       queryFn: ({ pageParam }) => fetchPins({ pageParam, searchText }),
       initialPageParam: null,
       getNextPageParam: (lastPage) =>
