@@ -52,7 +52,13 @@ router.get("/:id", async (req: Request, res: Response) => {
         id: pinId,
       },
       include: {
-        user: true,
+        user: {
+          omit: {
+            password: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
       },
     });
 

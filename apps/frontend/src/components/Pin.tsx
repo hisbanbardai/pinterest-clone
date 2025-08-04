@@ -112,10 +112,8 @@ export default function Pin() {
 
           <div className="flex items-center text-[13px] gap-2">
             <ProfileAvatar image={user.image} />
-            <Link to={"/profile/john"}>
-              <span>
-                {user.firstName} {user.lastName}
-              </span>
+            <Link to={`/profile/${user.username}`}>
+              <span className="text-[16px]">{user.name}</span>
             </Link>
           </div>
 

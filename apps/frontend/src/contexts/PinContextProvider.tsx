@@ -1,11 +1,12 @@
 import { createContext } from "react";
 import usePin from "../hooks/usePin";
+import type { TPin, TUser } from "../lib/types";
 
 type TPinContext = {
   error: Error | null;
   isLoading: boolean;
-  pin: {};
-  user: {};
+  pin: TPin;
+  user: TUser;
 };
 
 export const PinContext = createContext<TPinContext | null>(null);
