@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import AuthComponent from "../components/AuthComponent";
 import { signupSchema, type signupSchemaType } from "@repo/zod/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
 
@@ -18,18 +18,26 @@ export default function SignupPage() {
   const navigate = useNavigate();
 
   async function handleFormSubmit(formData: signupSchemaType) {
-    const { data, status } = await axios.post(
-      `${import.meta.env.VITE_API_BASE_URL}/users/signup`,
-      formData,
-      {
-        withCredentials: true,
-      }
-    );
+    try {
+      const { status } = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/users/signup`,
+        formData,
+        {
+          withCredentials: true,
+        }
+      );
 
-    if (status === 201) {
-      navigate("/");
-    } else {
-      toast.error(data.message || "Unable to create a user");
+      if (status === 201) {
+        navigate("/");
+      }
+    } catch (error) {
+      console.log(error);
+
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message || "Unable to create a user");
+      } else if (error instanceof Error) {
+        toast.error("Unable to create a user");
+      }
     }
   }
 
