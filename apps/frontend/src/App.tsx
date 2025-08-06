@@ -9,6 +9,8 @@ import HomePage from "./pages/HomePage";
 import ImageKitUpload from "./components/ImageKitUpload";
 import SearchQueryContextProvider from "./contexts/SearchQueryContextProvider";
 import { Toaster } from "sonner";
+import ProtectedRoutes from "./components/ProtectedRoutes";
+import PublicRoutes from "./components/PublicRoutes";
 
 function App() {
   return (
@@ -16,15 +18,19 @@ function App() {
       <BrowserRouter>
         <SearchQueryContextProvider>
           <Routes>
-            <Route element={<MainLayout />}>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/create-pin" element={<CreatePinPage />} />
-              <Route path="/profile/:username" element={<ProfilePage />} />
-              <Route path="/pin/:id" element={<PinDetailsPage />} />
-              <Route path="/test" element={<ImageKitUpload />} />
+            <Route element={<ProtectedRoutes />}>
+              <Route element={<MainLayout />}>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/create-pin" element={<CreatePinPage />} />
+                <Route path="/profile/:username" element={<ProfilePage />} />
+                <Route path="/pin/:id" element={<PinDetailsPage />} />
+                <Route path="/test" element={<ImageKitUpload />} />
+              </Route>
             </Route>
-            <Route path="/signin" element={<SigninPage />} />
-            <Route path="/signup" element={<SignupPage />} />
+            <Route element={<PublicRoutes />}>
+              <Route path="/signin" element={<SigninPage />} />
+              <Route path="/signup" element={<SignupPage />} />
+            </Route>
           </Routes>
         </SearchQueryContextProvider>
       </BrowserRouter>

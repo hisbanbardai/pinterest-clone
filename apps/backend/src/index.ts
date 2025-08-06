@@ -5,6 +5,9 @@ import boardsRouter from "./routes/boards.ts";
 import ImageKit from "imagekit";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import jwt, { JwtPayload } from "jsonwebtoken";
+
+const secret = process.env.JWT_SECRET_KEY as string;
 
 const app = express();
 const PORT = process.env.PORT || 3002;
@@ -44,16 +47,29 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.get("/auth", function (req, res) {
+  const token = req.cookies.token;
+
+  try {
+    const decoded = jwt.verify(token, secret) as JwtPayload;
+
+    res.status(200).json({ valid: true, userId: decoded.userId });
+    return;
+  } catch (error) {
+    console.error(error);
+    res.status(401).json({ valid: false });
+    return;
+  }
+
   // Your application logic to authenticate the user
   // For example, you can check if the user is logged in or has the necessary permissions
   // If the user is not authenticated, you can return an error response
-  const { token, expire, signature } = imagekit.getAuthenticationParameters();
-  res.send({
-    token,
-    expire,
-    signature,
-    publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
-  });
+  // const { token, expire, signature } = imagekit.getAuthenticationParameters();
+  // res.send({
+  //   token,
+  //   expire,
+  //   signature,
+  //   publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
+  // });
 });
 
 app.listen(PORT, () => console.log("Server running"));
