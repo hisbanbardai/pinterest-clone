@@ -1,8 +1,8 @@
 import { useState } from "react";
 import Gallery from "../components/Gallery";
-import Collections from "../components/Collections";
 import { useParams } from "react-router";
 import useProfile from "../hooks/useProfile";
+import Boards from "../components/Boards";
 
 export default function ProfilePage() {
   const [galleryType, setGalleryType] = useState("saved");
@@ -89,7 +89,7 @@ export default function ProfilePage() {
 
         {galleryType === "created" && <Gallery userId={data.user.id} />}
 
-        {galleryType === "saved" && <Collections />}
+        {galleryType === "saved" && <Boards userId={data.user.id} />}
       </section>
     </main>
   );

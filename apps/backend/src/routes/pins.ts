@@ -18,7 +18,7 @@ router.get("/", async (req: Request, res: Response) => {
         contains: search?.toString() || "",
         mode: "insensitive",
       },
-      userId: userId,
+      ...(userId ? { userId } : {}),
     },
     orderBy: {
       createdAt: "desc",

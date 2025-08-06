@@ -10,7 +10,7 @@ export default function useProfile(username: string | undefined) {
   }
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["username", username],
+    queryKey: ["user", username],
     queryFn: () => fetchUserProfile(username),
     enabled: !!username,
     staleTime: 1000 * 60 * 60,

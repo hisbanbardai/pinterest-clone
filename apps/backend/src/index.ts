@@ -1,7 +1,10 @@
 import express, { Request, Response } from "express";
 import userRouter from "./routes/users.ts";
 import pinsRouter from "./routes/pins.ts";
+import boardsRouter from "./routes/boards.ts";
 import ImageKit from "imagekit";
+import cors from "cors";
+import cookieParser from "cookie-parser";
 
 const app = express();
 const PORT = process.env.PORT || 3002;
@@ -13,19 +16,27 @@ const imagekit = new ImageKit({
 });
 
 // allow cross-origin requests
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
+// app.use(function (req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header(
+//     "Access-Control-Allow-Headers",
+//     "Origin, X-Requested-With, Content-Type, Accept"
+//   );
+//   next();
+// });
 
+app.use(cookieParser());
 app.use(express.json());
+app.use(
+  cors({
+    credentials: true,
+    origin: "http://localhost:5173",
+  })
+);
 
 app.use("/users", userRouter);
 app.use("/pins", pinsRouter);
+app.use("/boards", boardsRouter);
 
 app.get("/", (req: Request, res: Response) => {
   res.json({ msg: "Hello world" });

@@ -10,15 +10,19 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.2.1",
     "@imagekit/react": "^5.0.1",
     "@repo/ui": "*",
+    "@repo/zod": "*",
     "@tailwindcss/vite": "^4.1.7",
     "@tanstack/react-query": "^5.81.1",
     "axios": "^1.10.0",
     "emoji-picker-react": "^4.12.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-hook-form": "^7.62.0",
     "react-router": "^7.6.2",
+    "sonner": "^2.0.7",
     "tailwindcss": "^4.1.7"
   },
   "devDependencies": {

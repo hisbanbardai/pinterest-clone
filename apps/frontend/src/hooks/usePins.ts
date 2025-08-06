@@ -24,7 +24,7 @@ export default function usePins(searchText: string, userId: string) {
     userId: string;
   }) {
     const { data } = await axios.get(
-      `${import.meta.env.VITE_API_BASE_URL}/pins?limit=${LIMIT}&cursor=${pageParam}&search=${searchText}&userId=${userId}`
+      `${import.meta.env.VITE_API_BASE_URL}/pins?limit=${LIMIT}&cursor=${pageParam}&search=${searchText}&userId=${userId || ""}`
     );
     return data;
   }
@@ -40,7 +40,7 @@ export default function usePins(searchText: string, userId: string) {
 
   const { data, error, isLoading, fetchNextPage, hasNextPage } =
     useInfiniteQuery({
-      queryKey: [searchText, userId],
+      queryKey: ["pins", searchText, userId],
       //we are passing the pageParam as an argument below because React Query manages the pageParam internally. React Query calls your function and passes the current pageParam as an argument. Your function i.e. fetchPins receives it and uses it.
       queryFn: ({ pageParam }) => fetchPins({ pageParam, searchText, userId }),
       initialPageParam: null,
