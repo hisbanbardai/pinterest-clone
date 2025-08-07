@@ -19,6 +19,7 @@ export default function SigninPage() {
         `${import.meta.env.VITE_API_BASE_URL}/users/signin`,
         { email, password },
         { withCredentials: true }
+        //we need to add withCredentials: true otherwise it will not send the cookie
       );
 
       if (status === 200) {

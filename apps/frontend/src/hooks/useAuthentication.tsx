@@ -19,6 +19,10 @@ export default function useAuthentication() {
         } else {
           setIsAuthenticated(false);
         }
+      })
+      .catch((error) => {
+        console.error(error);
+        setIsAuthenticated(false);
       });
   }, []);
 

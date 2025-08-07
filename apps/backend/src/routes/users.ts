@@ -121,6 +121,14 @@ router.post("/signin", async (req: Request, res: Response) => {
   }
 });
 
+router.post("/logout", (req: Request, res: Response) => {
+  res.clearCookie("token");
+  res.status(200).json({
+    message: "Logged out",
+  });
+  return;
+});
+
 router.get("/:username", async (req, res) => {
   try {
     const username = req.params.username;

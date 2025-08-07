@@ -34,6 +34,7 @@ app.use(
   cors({
     credentials: true,
     origin: "http://localhost:5173",
+    //we need to add the above to allow requests from the set origin and also set cookie header
   })
 );
 
