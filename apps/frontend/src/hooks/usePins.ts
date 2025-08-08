@@ -2,7 +2,11 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useRef } from "react";
 
-export default function usePins(searchText: string, userId: string) {
+export default function usePins(
+  searchText: string,
+  userId: string,
+  boardId: string
+) {
   const LIMIT = 21;
 
   // below function would work if we use offset based pagination
@@ -24,7 +28,7 @@ export default function usePins(searchText: string, userId: string) {
     userId: string;
   }) {
     const { data } = await axios.get(
-      `${import.meta.env.VITE_API_BASE_URL}/pins?limit=${LIMIT}&cursor=${pageParam}&search=${searchText}&userId=${userId || ""}`
+      `${import.meta.env.VITE_API_BASE_URL}/pins?limit=${LIMIT}&cursor=${pageParam}&search=${searchText}&userId=${userId || ""}&boardId=${boardId || ""}`
     );
     return data;
   }
@@ -57,7 +61,7 @@ export default function usePins(searchText: string, userId: string) {
       threshold: 0.25,
     };
 
-    function handleIntersect(entries, observer) {
+    function handleIntersect(entries) {
       entries.forEach((entry) => {
         if (entry.isIntersecting && hasNextPage) {
           fetchNextPage();

@@ -50,19 +50,24 @@ async function main() {
   console.log(`Start seeding pins data ...`);
   const pins = [];
 
-  for (let i = 0; i < 100; i++) {
-    const mediaSize = Math.random() < 0.5 ? "800/1200" : "800/600";
-    const result = await prisma.pins.create({
-      data: {
-        title: `Pin ${i + 1}`,
-        description: `Descripiton of pin ${i + 1}`,
-        imageUrl: `https://picsum.photos/id/${i + 1}/${mediaSize}`,
-        userId: `${users[Math.ceil(Math.random() * 4)].id}`,
-        boardId: `${boards[Math.ceil(Math.random() * 4)].id}`,
-      },
-    });
+  for (const user of users) {
+    const userBoard = boards.filter((board) => board.userId === user.id);
+    console.log("userBoard", userBoard[0].id);
 
-    pins.push(result);
+    for (let i = 0; i < 10; i++) {
+      const mediaSize = Math.random() < 0.5 ? "800/1200" : "800/600";
+      const result = await prisma.pins.create({
+        data: {
+          title: `Pin ${i + 1}`,
+          description: `Descripiton of pin ${i + 1}`,
+          imageUrl: `https://picsum.photos/id/${i + 1}/${mediaSize}`,
+          userId: user.id,
+          boardId: userBoard[0].id,
+        },
+      });
+
+      pins.push(result);
+    }
   }
 
   console.log("All pins created");

@@ -17,3 +17,12 @@ export type TPin = {
   userId: string;
   user: TUser;
 };
+
+export type TBoard = {
+  id: string;
+  createdAt: string;
+  title: string;
+  updatedAt: string;
+  userId: string;
+  pins: TPin[];
+};

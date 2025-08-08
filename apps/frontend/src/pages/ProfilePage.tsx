@@ -71,7 +71,7 @@ export default function ProfilePage() {
         </div>
       </section>
 
-      <section className="flex flex-col gap-8">
+      <section className="flex flex-col gap-8 w-full">
         <div className="flex gap-6 justify-center font-semibold">
           <button
             onClick={handleClickType}
@@ -87,7 +87,11 @@ export default function ProfilePage() {
           </button>
         </div>
 
-        {galleryType === "created" && <Gallery userId={data.user.id} />}
+        {galleryType === "created" && (
+          <div className="w-full">
+            <Gallery userId={data.user.id} />
+          </div>
+        )}
 
         {galleryType === "saved" && <Boards userId={data.user.id} />}
       </section>

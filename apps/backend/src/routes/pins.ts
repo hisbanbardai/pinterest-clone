@@ -10,6 +10,7 @@ router.get("/", async (req: Request, res: Response) => {
     req.query.cursor !== "null" ? req.query.cursor?.toString() : "";
   const search = req.query.search;
   const userId = req.query.userId as string;
+  const boardId = req.query.boardId as string;
 
   const queryConfig: Prisma.PinsFindManyArgs = {
     take: limit,
@@ -19,6 +20,7 @@ router.get("/", async (req: Request, res: Response) => {
         mode: "insensitive",
       },
       ...(userId ? { userId } : {}),
+      ...(boardId ? { boardId } : {}),
     },
     orderBy: {
       createdAt: "desc",

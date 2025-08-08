@@ -2,6 +2,7 @@ import { Image } from "@imagekit/react";
 import { Link } from "react-router";
 import usePins from "../hooks/usePins";
 import useSearchQueryContext from "../hooks/useSearchQueryContext";
+import type { TPin } from "../lib/types";
 
 // const items = [
 //   {
@@ -86,11 +87,18 @@ import useSearchQueryContext from "../hooks/useSearchQueryContext";
 //   },
 // ];
 
-export default function Gallery({ userId }: { userId: string }) {
+export default function Gallery({
+  userId,
+  boardId,
+}: {
+  userId: string;
+  boardId: string;
+}) {
   const { searchText } = useSearchQueryContext();
   const { error, isLoading, hasNextPage, data, observeDivRef } = usePins(
     searchText,
-    userId
+    userId,
+    boardId
   );
 
   if (error) {
@@ -134,7 +142,7 @@ export default function Gallery({ userId }: { userId: string }) {
     <>
       <main className="columns-1 sm:columns-2 md:columns-4 lg:columns-7 px-4">
         {data?.pages.flatMap((page) =>
-          page.pins.map((pin) => <GalleryItem item={pin} key={pin.id} />)
+          page.pins.map((pin: TPin) => <GalleryItem item={pin} key={pin.id} />)
         )}
       </main>
       <div ref={observeDivRef} className="h-[50px]"></div>
@@ -151,7 +159,7 @@ export default function Gallery({ userId }: { userId: string }) {
   );
 }
 
-function GalleryItem({ item }) {
+function GalleryItem({ item }: { item: TPin }) {
   return (
     <div className="rounded-lg mb-5 overflow-hidden cursor-pointer group relative">
       <Link to={`/pin/${item.id}`}>
