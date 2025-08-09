@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import userRouter from "./routes/users.ts";
 import pinsRouter from "./routes/pins.ts";
 import boardsRouter from "./routes/boards.ts";
+import commentsRouter from "./routes/comments.ts";
 import ImageKit from "imagekit";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -41,6 +42,7 @@ app.use(
 app.use("/users", userRouter);
 app.use("/pins", pinsRouter);
 app.use("/boards", boardsRouter);
+app.use("/comments", commentsRouter);
 
 app.get("/", (req: Request, res: Response) => {
   res.json({ msg: "Hello world" });

@@ -26,3 +26,12 @@ export type TBoard = {
   userId: string;
   pins: TPin[];
 };
+
+export type TComment = {
+  id: string;
+  createdAt: string;
+  text: string;
+  updatedAt: string;
+  userId: string;
+  pinId: string;
+};

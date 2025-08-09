@@ -118,7 +118,7 @@ export default function Pin() {
           </div>
 
           <div className="flex-1 overflow-y-auto text-sm">
-            <Comments />
+            <Comments pinId={pin.id} />
           </div>
 
           <div>
