@@ -56,7 +56,13 @@ router.post("/signup", async (req: Request, res: Response): Promise<any> => {
 
     res.cookie("token", token);
 
-    res.status(201).json({ message: "User created successfully" });
+    //delete password property before returning the user data
+    if (newUser) {
+      const { password, ...user } = newUser;
+      res.status(201).json({ message: "User created successfully", user });
+      return;
+    }
+
     return;
   } catch (error) {
     console.error("Error creating user:", error);
@@ -91,7 +97,6 @@ router.post("/signin", async (req: Request, res: Response) => {
         payload.password,
         existingUser?.password
       );
-      console.log(passwordMatched);
 
       if (!passwordMatched) {
         res.status(401).json({ message: "Invalid credentials" });
@@ -110,8 +115,12 @@ router.post("/signin", async (req: Request, res: Response) => {
     //add cookie
     res.cookie("token", token);
 
-    res.status(200).json({ message: "User logged in successfully" });
-    return;
+    //delete password property before returning the user data
+    if (existingUser) {
+      const { password, ...user } = existingUser;
+      res.status(200).json({ message: "User logged in successfully", user });
+      return;
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({

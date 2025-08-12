@@ -6,5 +6,5 @@ export default function HomePage() {
 
   const boardId = searchParams.get("boardId");
 
-  return <Gallery userId="" boardId={boardId} />;
+  return <Gallery userId="" boardId={boardId || ""} />;
 }

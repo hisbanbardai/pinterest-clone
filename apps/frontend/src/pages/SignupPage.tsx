@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
+import useAuthentication from "../hooks/useAuthentication";
 
 export default function SignupPage() {
   const {
@@ -17,9 +18,11 @@ export default function SignupPage() {
 
   const navigate = useNavigate();
 
+  const { handleLogin } = useAuthentication();
+
   async function handleFormSubmit(formData: signupSchemaType) {
     try {
-      const { status } = await axios.post(
+      const { status, data } = await axios.post(
         `${import.meta.env.VITE_API_BASE_URL}/users/signup`,
         formData,
         {
@@ -28,6 +31,7 @@ export default function SignupPage() {
       );
 
       if (status === 201) {
+        handleLogin(data.user);
         navigate("/");
       }
     } catch (error) {

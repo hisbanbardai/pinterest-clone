@@ -3,19 +3,21 @@ import AuthComponent from "../components/AuthComponent";
 import axios, { AxiosError } from "axios";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
+import useAuthentication from "../hooks/useAuthentication";
 
 export default function SigninPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+  const { handleLogin } = useAuthentication();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
-      const { status } = await axios.post(
+      const { status, data } = await axios.post(
         `${import.meta.env.VITE_API_BASE_URL}/users/signin`,
         { email, password },
         { withCredentials: true }
@@ -24,6 +26,7 @@ export default function SigninPage() {
 
       if (status === 200) {
         setIsSubmitting(false);
+        handleLogin(data.user);
         navigate("/");
       }
     } catch (error) {

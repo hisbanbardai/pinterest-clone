@@ -1,30 +1,14 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext } from "react";
+import { UserContext } from "../contexts/UserContextProvider";
 
 export default function useAuthentication() {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const context = useContext(UserContext);
 
-  useEffect(() => {
-    axios
-      .get(`${import.meta.env.VITE_API_BASE_URL}/auth`, {
-        withCredentials: true,
-      })
-      .then(({ data }) => {
-        if (!data.valid) {
-          setIsAuthenticated(false);
-        } else if (data.valid && data.userId) {
-          setIsAuthenticated(true);
+  if (!context) {
+    throw new Error(
+      "You are trying to use user context value in a component that is not wrapped by the UserContextProvider"
+    );
+  }
 
-          localStorage.setItem("userId", data.userId);
-        } else {
-          setIsAuthenticated(false);
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        setIsAuthenticated(false);
-      });
-  }, []);
-
-  return { isAuthenticated };
+  return context;
 }
