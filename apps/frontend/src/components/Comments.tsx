@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import ProfileAvatar from "./ProfileAvatar";
 import axios from "axios";
-import type { TComment } from "../lib/types";
+import type { TCommentWithUser } from "../lib/types";
 import { format } from "timeago.js";
 
 export default function Comments({ pinId }: { pinId: string }) {
@@ -32,21 +32,21 @@ export default function Comments({ pinId }: { pinId: string }) {
     <div className="flex flex-col gap-3">
       <p className="font-semibold">{data.comments.length} Comments</p>
 
-      {data.comments.map((comment: TComment) => (
+      {data.comments.map((comment: TCommentWithUser) => (
         <Comment comment={comment} key={comment.id} />
       ))}
     </div>
   );
 }
 
-function Comment({ comment }: { comment: TComment }) {
+function Comment({ comment }: { comment: TCommentWithUser }) {
   const { user } = comment;
 
   return (
     <div className="flex gap-2 items-start">
       <ProfileAvatar image={user.image} />
-      <div>
-        <p>{user.name}</p>
+      <div className="flex flex-col gap-1">
+        <p className="font-semibold">{user.name}</p>
         <p>{comment.text}</p>
         <p className="text-xs text-neutral-500">{format(comment.createdAt)}</p>
       </div>

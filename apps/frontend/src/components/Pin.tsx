@@ -122,7 +122,7 @@ export default function Pin() {
           </div>
 
           <div>
-            <CommentForm />
+            <CommentForm pinId={pin.id} />
           </div>
         </div>
       </section>

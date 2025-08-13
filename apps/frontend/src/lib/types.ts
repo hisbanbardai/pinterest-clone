@@ -35,3 +35,7 @@ export type TComment = {
   userId: string;
   pinId: string;
 };
+
+export type TCommentWithUser = TComment & {
+  user: TUser;
+};
