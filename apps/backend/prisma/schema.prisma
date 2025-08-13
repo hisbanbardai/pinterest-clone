@@ -26,6 +26,10 @@ model Users {
   pins Pins[]
   boards Boards[]
   comments Comments[]
+  followers Follower_Following[] @relation("following") 
+  //we wrote "following" in relation above and not "follower" because let's say if we want to get the followers of User A then the relation/join should be between id of Users table and followingId of Follower_Following table because in this case followingId will always be the id of User A
+  following Follower_Following[] @relation("follower")
+  //we wrote "follower" in relation above and not "following" because let's say if we want to get the list of users who are being followed by User A then the relation/join should be between id of Users table and followerId of Follower_Following table because in this case followerId will always be the id of User A
 }
 
 model Pins {
@@ -72,4 +76,12 @@ model Comments {
   //FK
   pinId String
   pin Pins @relation(fields: [pinId], references: [id])
+}
+
+model Follower_Following {
+  followerId String
+  follower Users @relation("follower", fields: [followerId], references: [id])
+  followingId String
+  following Users @relation("following", fields: [followingId], references: [id])
+  @@id([followerId, followingId])
 }
