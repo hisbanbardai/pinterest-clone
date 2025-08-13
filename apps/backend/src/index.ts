@@ -6,8 +6,8 @@ import commentsRouter from "./routes/comments.ts";
 import ImageKit from "imagekit";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import jwt, { JwtPayload } from "jsonwebtoken";
 import prisma from "./lib/prisma.ts";
+import { authMiddleware } from "./middleware/auth.ts";
 
 const secret = process.env.JWT_SECRET_KEY as string;
 
@@ -50,15 +50,13 @@ app.get("/", (req: Request, res: Response) => {
   return;
 });
 
-app.get("/auth", async function (req, res) {
-  const token = req.cookies.token;
+app.get("/auth", authMiddleware, async function (req, res) {
+  const userId = req.userId;
 
   try {
-    const decoded = jwt.verify(token, secret) as JwtPayload;
-
     const existingUser = await prisma.users.findUnique({
       where: {
-        id: decoded.userId,
+        id: userId,
       },
       omit: {
         password: true,

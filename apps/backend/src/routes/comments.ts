@@ -1,5 +1,7 @@
 import express, { Request, Response } from "express";
 import prisma from "../lib/prisma.ts";
+import { authMiddleware } from "../middleware/auth.ts";
+import { Prisma } from "@prisma/client";
 
 const router = express.Router();
 
@@ -29,6 +31,48 @@ router.get("/:pinId", async (req: Request, res: Response) => {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });
     return;
+  }
+});
+
+router.post("/", authMiddleware, async (req: Request, res: Response) => {
+  const pinId = req.body.pinId;
+  const userId = req.userId;
+  const text = req.body.text;
+
+  if (!pinId || !text) {
+    res.status(400).json({ message: "Invalid data" });
+    return;
+  }
+
+  try {
+    const comment = await prisma.comments.create({
+      data: {
+        pinId,
+        userId,
+        text,
+      },
+    });
+
+    res.status(201).json({ message: "Comment added successfully" });
+    return;
+  } catch (error) {
+    console.error(error);
+
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      // The .code property can be accessed in a type-safe manner
+      if (error.code === "P2003") {
+        res.status(400).json({
+          message: "Pin not found",
+        });
+        return;
+      } else {
+        res.status(500).json({ message: "Internal server error" });
+        return;
+      }
+    } else {
+      res.status(500).json({ message: "Internal server error" });
+      return;
+    }
   }
 });
 
