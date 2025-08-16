@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 export default function usePins(
   searchText: string,
   userId: string,
-  boardId: string
+  boardId?: string
 ) {
   const LIMIT = 21;
 

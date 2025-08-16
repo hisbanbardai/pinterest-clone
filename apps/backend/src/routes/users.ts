@@ -146,6 +146,10 @@ router.get("/:username", async (req, res) => {
       where: {
         username,
       },
+      include: {
+        followers: true,
+        following: true,
+      },
       omit: {
         password: true,
       },

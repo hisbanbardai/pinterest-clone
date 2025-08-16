@@ -3,11 +3,31 @@ import Gallery from "../components/Gallery";
 import { useParams } from "react-router";
 import useProfile from "../hooks/useProfile";
 import Boards from "../components/Boards";
+import useAuthentication from "../hooks/useAuthentication";
+import FollowButton from "../components/FollowButton";
+
+type TFollowRecord = {
+  followerId: string;
+  followingId: string;
+};
 
 export default function ProfilePage() {
   const [galleryType, setGalleryType] = useState("saved");
   const { username } = useParams();
   const { data, isLoading, error } = useProfile(username);
+  const { currentUser } = useAuthentication();
+
+  console.log(data);
+  console.log(currentUser);
+
+  let isFollowing;
+
+  if (data) {
+    isFollowing = data.user.followers.some((followRecord: TFollowRecord) => {
+      return followRecord.followerId === currentUser?.id;
+    });
+    console.log(isFollowing);
+  }
 
   const activeTypeStyle = "border-b-3 border-black";
 
@@ -57,17 +77,22 @@ export default function ProfilePage() {
           />
           <p className="text-2xl font-bold">{data.user.name}</p>
           <p className="text-neutral-400">@{data.user.username}</p>
-          <p className="font-semibold">10 followers &middot; 20 followings</p>
+          <p className="font-semibold">
+            {data.user.followers.length} followers &middot;{" "}
+            {data.user.following.length} followings
+          </p>
         </div>
         <div className="flex gap-5">
-          <img src="/general/share.svg" alt="" width={20} />
+          {/* <img src="/general/share.svg" alt="" width={20} />
           <button className="bg-neutral-300 text-black font-medium px-4 py-3 rounded-full text-sm cursor-pointer">
             Message
-          </button>
-          <button className="bg-red-600 text-white font-medium px-4 py-3 rounded-full text-sm cursor-pointer">
-            Follow
-          </button>
-          <img src="/general/more.svg" alt="" width={20} />
+          </button> */}
+          {data.user.username !== currentUser?.username ? (
+            <FollowButton isFollowing={isFollowing} username={username} />
+          ) : (
+            ""
+          )}
+          {/* <img src="/general/more.svg" alt="" width={20} /> */}
         </div>
       </section>
 

@@ -3,6 +3,7 @@ import ProfileAvatar from "./ProfileAvatar";
 import axios from "axios";
 import type { TCommentWithUser } from "../lib/types";
 import { format } from "timeago.js";
+import { Link } from "react-router";
 
 export default function Comments({ pinId }: { pinId: string }) {
   const { data, isLoading, error } = useQuery({
@@ -46,7 +47,9 @@ function Comment({ comment }: { comment: TCommentWithUser }) {
     <div className="flex gap-2 items-start">
       <ProfileAvatar image={user.image} />
       <div className="flex flex-col gap-1">
-        <p className="font-semibold">{user.name}</p>
+        <Link to={`/profile/${user.username}`}>
+          <p className="font-semibold cursor-pointer">{user.name}</p>
+        </Link>
         <p>{comment.text}</p>
         <p className="text-xs text-neutral-500">{format(comment.createdAt)}</p>
       </div>

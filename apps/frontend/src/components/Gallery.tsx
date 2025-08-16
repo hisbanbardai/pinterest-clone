@@ -92,7 +92,7 @@ export default function Gallery({
   boardId,
 }: {
   userId: string;
-  boardId: string;
+  boardId?: string;
 }) {
   const { searchText } = useSearchQueryContext();
   const { error, isLoading, hasNextPage, data, observeDivRef } = usePins(
