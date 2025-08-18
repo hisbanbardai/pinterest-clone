@@ -6,7 +6,12 @@ import {
   upload,
 } from "@imagekit/react";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { createPinSchema, type createPinSchemaType } from "@repo/zod/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios, { AxiosError } from "axios";
+import { useNavigate } from "react-router";
 
 export default function CreatePinPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -14,6 +19,16 @@ export default function CreatePinPage() {
   // State to keep track of the current image upload progress (percentage)
   const [progress, setProgress] = useState(0);
   const [isUploadImagePressed, setIsUploadImagePressed] = useState(false);
+  const {
+    register,
+    formState: { isSubmitting, errors },
+    handleSubmit,
+    setValue,
+  } = useForm({
+    resolver: zodResolver(createPinSchema),
+  });
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!selectedFile) {
@@ -32,8 +47,26 @@ export default function CreatePinPage() {
       setSelectedFile((prev) => prev || null);
       return;
     }
+
+    //check if it is an image file
+    const allowedExtensions = ["png", "jpg", "jpeg"];
+    const fileName = e.target.files[0].name;
+    const lastDotIndex = fileName.lastIndexOf(".") + 1;
+    const fileExtension = fileName.slice(lastDotIndex);
+
+    const isAllowed = allowedExtensions.some((ext) => ext === fileExtension);
+
+    if (!isAllowed) {
+      toast.error("Only jpg, jpeg and png files are allowed");
+      setSelectedFile(null);
+      return;
+    }
+
     //select the first file
     setSelectedFile(e.target.files[0]);
+
+    //remove value onChange does not trigger if the same file is selected consecutively
+    e.target.value = "";
   }
 
   // Create an AbortController instance to provide an option to cancel the upload if needed.
@@ -109,6 +142,9 @@ export default function CreatePinPage() {
           abortSignal: abortController.signal,
         });
         console.log("Upload response:", uploadResponse);
+        if (uploadResponse.url) {
+          setValue("imageURL", uploadResponse.url);
+        }
       }
     } catch (error) {
       toast.error("Upload error");
@@ -133,16 +169,35 @@ export default function CreatePinPage() {
     setSelectedFile(null);
   }
 
+  async function handleFormSubmit(formData: createPinSchemaType) {
+    try {
+      const { status, data } = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/pins`,
+        formData,
+        {
+          withCredentials: true,
+        }
+      );
+
+      console.log(data);
+
+      if (status === 201) {
+        navigate(`/pin/${data.id}`);
+      }
+    } catch (error) {
+      console.error(error);
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message || "Unable to create the pin");
+      } else if (error instanceof Error) {
+        toast.error("Unable to create the pin");
+      }
+    }
+  }
+
   return (
     <main className="min-h-screen overflow-y-auto mb-10">
       <div className="flex justify-between items-center border-b border-black/10 py-3 w-full px-4 border-t">
         <span className="font-semibold text-xl">Create Pin</span>
-        <div className="flex gap-5 items-center">
-          <span className="text-black/35 font-medium">Changes stored!</span>
-          <button className="text-white bg-red-600 py-3 px-4 rounded-full cursor-pointer">
-            Publish
-          </button>
-        </div>
       </div>
 
       <div className="flex flex-col max-w-[500px] mx-5 sm:mx-auto lg:flex-row lg:justify-center lg:max-w-[1000px]  gap-10 pt-7 relative mt-5">
@@ -202,7 +257,10 @@ export default function CreatePinPage() {
         </div>
 
         <div className="flex-1/2 ">
-          <form className="flex flex-col gap-4">
+          <form
+            onSubmit={handleSubmit(handleFormSubmit)}
+            className="flex flex-col gap-4"
+          >
             <input
               type="file"
               name="file"
@@ -217,10 +275,14 @@ export default function CreatePinPage() {
               <input
                 className="border-2 border-black/10 py-2 px-3 rounded-2xl text-[15px]"
                 type="text"
+                {...register("title")}
                 id="title"
                 name="title"
                 placeholder="Add a title"
               />
+              {errors.title && (
+                <p className="text-red-500">{errors.title.message}</p>
+              )}
             </div>
             <div className="flex flex-col gap-2">
               <label className="text-sm text-black/75" htmlFor="description">
@@ -229,6 +291,7 @@ export default function CreatePinPage() {
               <textarea
                 className="border-2 border-black/10 py-2 px-3 rounded-2xl text-[15px] resize-none"
                 id="description"
+                {...register("description")}
                 name="description"
                 placeholder="Add a detailed description"
                 rows={3}
@@ -236,45 +299,31 @@ export default function CreatePinPage() {
             </div>
             <div className="flex flex-col gap-2">
               <label className="text-sm text-black/75" htmlFor="link">
-                Link
+                Image URL
               </label>
               <input
-                className="border-2 border-black/10 py-2 px-3 rounded-2xl text-[15px]"
+                className="border-2 border-black/10 py-2 px-3 rounded-2xl text-[15px] disabled:bg-black/8 cursor-not-allowed"
                 type="text"
-                id="link"
-                name="link"
-                placeholder="Add a link"
+                id="imageURL"
+                {...register("imageURL")}
+                name="imageURL"
+                placeholder="Image url"
               />
+              <span className="text-xs ml-3 text-black/70">
+                * Link will be generated automatically after the image is
+                uploaded successfully
+              </span>
+              {errors.imageURL && (
+                <p className="text-red-500">{errors.imageURL.message}</p>
+              )}
             </div>
-            <div className="flex flex-col gap-2">
-              <label className="text-sm text-black/75" htmlFor="board">
-                Board
-              </label>
-              <select
-                name="board"
-                id="board"
-                className="border-2 border-black/10 py-2 px-3 rounded-2xl text-[15px] text-black/45"
+            <div className="mt-5  w-1/2 mx-auto">
+              <button
+                disabled={isSubmitting}
+                className="text-white bg-red-600 py-3 px-4 rounded-full cursor-pointer w-full disabled:bg-red-300"
               >
-                <option value="">Choose a board</option>
-                <option value="1">Board 1</option>
-                <option value="2">Board 2</option>
-                <option value="3">Board 3</option>
-              </select>
-            </div>
-            <div className="flex flex-col gap-2">
-              <label className="text-sm text-black/75" htmlFor="tags">
-                Tagged topics
-              </label>
-              <input
-                className="border-2 border-black/10 py-2 px-3 rounded-2xl text-[15px]"
-                type="text"
-                name="tags"
-                id="tags"
-                placeholder="Search for a tag"
-              />
-              <small className="text-black/50">
-                Don't worry people won't see your tags
-              </small>
+                Publish
+              </button>
             </div>
           </form>
         </div>

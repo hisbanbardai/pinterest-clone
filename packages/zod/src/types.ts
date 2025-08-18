@@ -17,3 +17,21 @@ export const signinSchema = z.object({
 });
 
 export type signinSchemaType = z.infer<typeof signinSchema>;
+
+export const createPinSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  description: z.string().optional(),
+  imageURL: z
+    .string()
+    .url("Invalid URL format.")
+    .refine(
+      (url) => url.startsWith("http://") || url.startsWith("https://"),
+      "Image URL must use HTTP or HTTPS protocol."
+    )
+    .refine(
+      (url) => /\.(jpeg|jpg|png)$/i.test(url),
+      "Image URL must have a valid image file extension."
+    ),
+});
+
+export type createPinSchemaType = z.infer<typeof createPinSchema>;

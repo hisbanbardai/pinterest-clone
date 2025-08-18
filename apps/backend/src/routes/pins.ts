@@ -1,6 +1,8 @@
 import express, { Request, Response } from "express";
 import prisma from "../lib/prisma.ts";
 import { Prisma } from "@prisma/client";
+import { createPinSchema } from "@repo/zod/types";
+import { authMiddleware } from "../middleware/auth.ts";
 
 const router = express.Router();
 
@@ -88,6 +90,36 @@ router.get("/:id", async (req: Request, res: Response) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
+    return;
+  }
+});
+
+router.post("/", authMiddleware, async (req: Request, res: Response) => {
+  const payload = req.body;
+  const userId = req.userId;
+
+  const result = createPinSchema.safeParse(payload);
+
+  if (!result.success) {
+    res.status(400).json({ error: result.error.errors });
+    return;
+  }
+
+  try {
+    const pin = await prisma.pins.create({
+      data: {
+        title: result.data.title,
+        description: result.data.description,
+        imageUrl: result.data.imageURL,
+        userId,
+      },
+    });
+
+    res.status(201).json({ message: "Pin created successfully", id: pin.id });
+    return;
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
     return;
   }
 });
