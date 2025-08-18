@@ -5,7 +5,7 @@ import {
   ImageKitUploadNetworkError,
   upload,
 } from "@imagekit/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 // UploadExample component demonstrates file uploading using ImageKit's React SDK.
 const UploadExample = () => {
@@ -104,23 +104,25 @@ const UploadExample = () => {
 
     // Call the ImageKit SDK upload function with the required parameters and callbacks.
     try {
-      const uploadResponse = await upload({
-        // Authentication parameters
-        expire,
-        token,
-        signature,
-        publicKey,
-        file: selectedFile,
-        folder: "/test",
-        fileName: selectedFile.name, // Optionally set a custom file name
-        // Progress callback to update upload progress state
-        onProgress: (event) => {
-          setProgress((event.loaded / event.total) * 100);
-        },
-        // Abort signal to allow cancellation of the upload if needed.
-        abortSignal: abortController.signal,
-      });
-      console.log("Upload response:", uploadResponse);
+      if (selectedFile) {
+        const uploadResponse = await upload({
+          // Authentication parameters
+          expire,
+          token,
+          signature,
+          publicKey,
+          file: selectedFile,
+          folder: "/test",
+          fileName: selectedFile.name, // Optionally set a custom file name
+          // Progress callback to update upload progress state
+          onProgress: (event) => {
+            setProgress((event.loaded / event.total) * 100);
+          },
+          // Abort signal to allow cancellation of the upload if needed.
+          abortSignal: abortController.signal,
+        });
+        console.log("Upload response:", uploadResponse);
+      }
     } catch (error) {
       // Handle specific error types provided by the ImageKit SDK.
       if (error instanceof ImageKitAbortError) {

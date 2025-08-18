@@ -24,12 +24,14 @@ model Users {
   updatedAt DateTime @updatedAt
 
   pins Pins[]
-  boards Boards[]
+  // boards Boards[]
   comments Comments[]
   followers Follower_Following[] @relation("following") 
   //we wrote "following" in relation above and not "follower" because let's say if we want to get the followers of User A then the relation/join should be between id of Users table and followingId of Follower_Following table because in this case followingId will always be the id of User A
   following Follower_Following[] @relation("follower")
   //we wrote "follower" in relation above and not "following" because let's say if we want to get the list of users who are being followed by User A then the relation/join should be between id of Users table and followerId of Follower_Following table because in this case followerId will always be the id of User A
+
+  savedPins User_Saved_Pins[]
 }
 
 model Pins {
@@ -44,24 +46,25 @@ model Pins {
   userId String
   user Users @relation(fields: [userId], references: [id])
   //FK
-  boardId String
-  board Boards? @relation(fields: [boardId], references: [id])
+  // boardId String
+  // board Boards? @relation(fields: [boardId], references: [id])
 
   comments Comments[]
+  savedPins User_Saved_Pins[]
 }
 
-model Boards {
-  id String @id @default(uuid())
-  title String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+// model Boards {
+//   id String @id @default(uuid())
+//   title String
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
 
-  //FK
-  userId String
-  user Users @relation(fields: [userId], references: [id])
+//   //FK
+//   userId String
+//   user Users @relation(fields: [userId], references: [id])
 
-  pins Pins[]
-}
+//   pins Pins[]
+// }
 
 
 model Comments {
@@ -84,4 +87,13 @@ model Follower_Following {
   followingId String
   following Users @relation("following", fields: [followingId], references: [id])
   @@id([followerId, followingId])
+}
+
+model User_Saved_Pins {
+  userId String
+  user Users @relation(fields: [userId], references: [id])
+  pinId String
+  pin Pins @relation(fields: [pinId], references: [id])
+
+  @@id([userId, pinId])
 }

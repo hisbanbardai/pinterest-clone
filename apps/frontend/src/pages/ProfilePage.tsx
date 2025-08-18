@@ -114,11 +114,15 @@ export default function ProfilePage() {
 
         {galleryType === "created" && (
           <div className="w-full">
-            <Gallery userId={data.user.id} />
+            <Gallery userId={data.user.id} galleryType={galleryType} />
           </div>
         )}
 
-        {galleryType === "saved" && <Boards userId={data.user.id} />}
+        {galleryType === "saved" && (
+          <div className="w-full">
+            <Gallery userId={data.user.id} galleryType={galleryType} />
+          </div>
+        )}
       </section>
     </main>
   );

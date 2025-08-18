@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 export default function usePins(
   searchText: string,
   userId: string,
-  boardId?: string
+  galleryType?: string | undefined
 ) {
   const LIMIT = 21;
 
@@ -22,13 +22,15 @@ export default function usePins(
     pageParam,
     searchText,
     userId,
+    galleryType,
   }: {
-    pageParam: string;
+    pageParam: string | null;
     searchText: string;
     userId: string;
+    galleryType: string | undefined;
   }) {
     const { data } = await axios.get(
-      `${import.meta.env.VITE_API_BASE_URL}/pins?limit=${LIMIT}&cursor=${pageParam}&search=${searchText}&userId=${userId || ""}&boardId=${boardId || ""}`
+      `${import.meta.env.VITE_API_BASE_URL}/pins?limit=${LIMIT}&cursor=${pageParam}&search=${searchText}&userId=${userId || ""}&galleryType=${galleryType || ""}`
     );
     return data;
   }
@@ -46,7 +48,8 @@ export default function usePins(
     useInfiniteQuery({
       queryKey: ["pins", searchText, userId],
       //we are passing the pageParam as an argument below because React Query manages the pageParam internally. React Query calls your function and passes the current pageParam as an argument. Your function i.e. fetchPins receives it and uses it.
-      queryFn: ({ pageParam }) => fetchPins({ pageParam, searchText, userId }),
+      queryFn: ({ pageParam }) =>
+        fetchPins({ pageParam, searchText, userId, galleryType }),
       initialPageParam: null,
       getNextPageParam: (lastPage) =>
         lastPage.pins.length < LIMIT ? undefined : lastPage.cursor,

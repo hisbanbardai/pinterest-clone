@@ -89,16 +89,16 @@ import type { TPin } from "../lib/types";
 
 export default function Gallery({
   userId,
-  boardId,
+  galleryType,
 }: {
   userId: string;
-  boardId?: string;
+  galleryType?: string;
 }) {
   const { searchText } = useSearchQueryContext();
   const { error, isLoading, hasNextPage, data, observeDivRef } = usePins(
     searchText,
     userId,
-    boardId
+    galleryType
   );
 
   if (error) {

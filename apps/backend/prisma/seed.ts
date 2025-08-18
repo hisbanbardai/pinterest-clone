@@ -6,8 +6,9 @@ async function main() {
   //delete existing data
   console.log(`Delete existing data`);
   await prisma.comments.deleteMany();
+  await prisma.follower_Following.deleteMany();
+  await prisma.user_Saved_Pins.deleteMany();
   await prisma.pins.deleteMany();
-  await prisma.boards.deleteMany();
   await prisma.users.deleteMany();
 
   //add data
@@ -31,29 +32,26 @@ async function main() {
   }
   console.log("All users created");
 
-  console.log(`Start seeding boards data ...`);
-  const boards = [] as any;
+  // console.log(`Start seeding boards data ...`);
+  // const boards = [] as any;
 
-  for (let i = 0; i < 5; i++) {
-    const result = await prisma.boards.create({
-      data: {
-        title: `Board of user ${users[i].username}`,
-        userId: users[i].id,
-      },
-    });
+  // for (let i = 0; i < 5; i++) {
+  //   const result = await prisma.boards.create({
+  //     data: {
+  //       title: `Board of user ${users[i].username}`,
+  //       userId: users[i].id,
+  //     },
+  //   });
 
-    boards.push(result);
-  }
+  //   boards.push(result);
+  // }
 
-  console.log("All boards created");
+  // console.log("All boards created");
 
   console.log(`Start seeding pins data ...`);
   const pins = [];
 
   for (const user of users) {
-    const userBoard = boards.filter((board) => board.userId === user.id);
-    console.log("userBoard", userBoard[0].id);
-
     for (let i = 0; i < 10; i++) {
       const mediaSize = Math.random() < 0.5 ? "800/1200" : "800/600";
       const result = await prisma.pins.create({
@@ -62,7 +60,6 @@ async function main() {
           description: `Descripiton of pin ${i + 1}`,
           imageUrl: `https://picsum.photos/id/${i + 1}/${mediaSize}`,
           userId: user.id,
-          boardId: userBoard[0].id,
         },
       });
 

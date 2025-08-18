@@ -10,26 +10,14 @@ import cookieParser from "cookie-parser";
 import prisma from "./lib/prisma.ts";
 import { authMiddleware } from "./middleware/auth.ts";
 
-const secret = process.env.JWT_SECRET_KEY as string;
-
 const app = express();
 const PORT = process.env.PORT || 3002;
 
 const imagekit = new ImageKit({
-  urlEndpoint: "<YOUR_IMAGEKIT_URL_ENDPOINT>", // https://ik.imagekit.io/your_imagekit_id
+  urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT || "", // https://ik.imagekit.io/your_imagekit_id
   publicKey: process.env.IMAGEKIT_PUBLIC_KEY || "",
   privateKey: process.env.IMAGEKIT_PRIVATE_KEY || "",
 });
-
-// allow cross-origin requests
-// app.use(function (req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header(
-//     "Access-Control-Allow-Headers",
-//     "Origin, X-Requested-With, Content-Type, Accept"
-//   );
-//   next();
-// });
 
 app.use(cookieParser());
 app.use(express.json());
@@ -37,7 +25,6 @@ app.use(
   cors({
     credentials: true,
     origin: "http://localhost:5173",
-    //we need to add the above to allow requests from the set origin and also set cookie header
   })
 );
 
@@ -87,6 +74,16 @@ app.get("/auth", authMiddleware, async function (req, res) {
   //   signature,
   //   publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
   // });
+});
+
+app.get("/imagekitauth", authMiddleware, async function (req, res) {
+  const { token, expire, signature } = imagekit.getAuthenticationParameters();
+  res.send({
+    token,
+    expire,
+    signature,
+    publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
+  });
 });
 
 app.listen(PORT, () => console.log("Server running"));

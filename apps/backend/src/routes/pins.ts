@@ -10,18 +10,30 @@ router.get("/", async (req: Request, res: Response) => {
     req.query.cursor !== "null" ? req.query.cursor?.toString() : "";
   const search = req.query.search;
   const userId = req.query.userId as string;
-  const boardId = req.query.boardId as string;
+  const galleryType = req.query.galleryType;
 
-  const queryConfig: Prisma.PinsFindManyArgs = {
-    take: limit,
-    where: {
+  let whereClause;
+
+  if (galleryType === "saved") {
+    whereClause = {
+      savedPins: {
+        some: {
+          userId,
+        },
+      },
+    };
+  } else {
+    whereClause = {
       title: {
         contains: search?.toString() || "",
         mode: "insensitive",
       },
       ...(userId ? { userId } : {}),
-      ...(boardId ? { boardId } : {}),
-    },
+    };
+  }
+  const queryConfig: Prisma.PinsFindManyArgs = {
+    take: limit,
+    where: whereClause as Prisma.PinsWhereInput,
     orderBy: {
       createdAt: "desc",
     },
