@@ -56,7 +56,7 @@ router.post(
               followingId: followingUser.id,
             },
           });
-          res.status(200).json({ createdFollowRecord });
+          res.status(201).json({ createdFollowRecord });
           return;
         }
       }

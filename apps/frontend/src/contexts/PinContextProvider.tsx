@@ -7,6 +7,7 @@ type TPinContext = {
   isLoading: boolean;
   pin: TPin;
   user: TUser;
+  savedPinCount: number;
 };
 
 export const PinContext = createContext<TPinContext | null>(null);
@@ -18,7 +19,7 @@ export default function PinContextProvider({
   id: string | undefined;
   children: React.ReactNode;
 }) {
-  const { error, isLoading, pin, user } = usePin(id);
+  const { error, isLoading, pin, user, savedPinCount } = usePin(id);
 
   return (
     <PinContext.Provider
@@ -27,6 +28,7 @@ export default function PinContextProvider({
         isLoading,
         pin,
         user,
+        savedPinCount,
       }}
     >
       {children}

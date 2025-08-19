@@ -6,12 +6,13 @@ import { authMiddleware } from "../middleware/auth.ts";
 
 const router = express.Router();
 
-router.get("/", async (req: Request, res: Response) => {
+router.get("/", authMiddleware, async (req: Request, res: Response) => {
   const limit = Number(req.query.limit) || 10;
   const cursor =
     req.query.cursor !== "null" ? req.query.cursor?.toString() : "";
   const search = req.query.search;
-  const userId = req.query.userId as string;
+  const userId = req.query.userId;
+  const loggedInUserId = req.userId;
   const galleryType = req.query.galleryType;
 
   let whereClause;
@@ -20,9 +21,13 @@ router.get("/", async (req: Request, res: Response) => {
     whereClause = {
       savedPins: {
         some: {
-          userId,
+          userId: loggedInUserId,
         },
       },
+    };
+  } else if (galleryType === "created") {
+    whereClause = {
+      userId,
     };
   } else {
     whereClause = {
@@ -30,12 +35,18 @@ router.get("/", async (req: Request, res: Response) => {
         contains: search?.toString() || "",
         mode: "insensitive",
       },
-      ...(userId ? { userId } : {}),
     };
   }
   const queryConfig: Prisma.PinsFindManyArgs = {
     take: limit,
     where: whereClause as Prisma.PinsWhereInput,
+    include: {
+      savedPins: {
+        where: {
+          userId: loggedInUserId,
+        },
+      },
+    },
     orderBy: {
       createdAt: "desc",
     },
@@ -56,8 +67,9 @@ router.get("/", async (req: Request, res: Response) => {
   return;
 });
 
-router.get("/:id", async (req: Request, res: Response) => {
+router.get("/:id", authMiddleware, async (req: Request, res: Response) => {
   const pinId = req.params.id;
+  const userId = req.userId;
 
   if (!pinId?.trim()) {
     res.status(400).json({ message: "Invalid pin id" });
@@ -77,6 +89,7 @@ router.get("/:id", async (req: Request, res: Response) => {
             updatedAt: true,
           },
         },
+        savedPins: true,
       },
     });
 
@@ -85,7 +98,20 @@ router.get("/:id", async (req: Request, res: Response) => {
       return;
     }
 
-    res.status(200).json({ pin: existingPin, user: existingPin.user });
+    const savedPinCount = existingPin.savedPins.length;
+
+    const savedPinsByUser = existingPin.savedPins.filter(
+      (pin) => pin.userId === userId
+    );
+
+    const pin = {
+      ...existingPin,
+      savedPins: savedPinsByUser,
+    };
+
+    res
+      .status(200)
+      .json({ pin: pin, user: existingPin.user, savedPinCount: savedPinCount });
     return;
   } catch (error) {
     console.error(error);

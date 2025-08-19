@@ -12,21 +12,6 @@ const navLinks = [
     imageSource: "/general/create.svg",
     alt: "create icon image",
   },
-  {
-    href: "/",
-    imageSource: "/general/updates.svg",
-    alt: "updates icon image",
-  },
-  {
-    href: "/",
-    imageSource: "/general/messages.svg",
-    alt: "messages icon image",
-  },
-  {
-    href: "/",
-    imageSource: "/general/more.svg",
-    alt: "more icon image",
-  },
 ];
 
 export default function Sidebar() {
@@ -37,7 +22,7 @@ export default function Sidebar() {
         {navLinks.map((link) => (
           <li
             key={link.alt}
-            className="last:mt-auto flex justify-center w-[48px] h-[48px] hover:bg-neutral-100 cursor-pointer"
+            className=" flex justify-center w-[48px] h-[48px] hover:bg-neutral-100 cursor-pointer"
           >
             <Link to={link.href} className="flex justify-center">
               <img src={link.imageSource} alt={link.alt} className="w-[20px]" />

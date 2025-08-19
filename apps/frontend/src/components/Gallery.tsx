@@ -3,95 +3,15 @@ import { Link } from "react-router";
 import usePins from "../hooks/usePins";
 import useSearchQueryContext from "../hooks/useSearchQueryContext";
 import type { TPin } from "../lib/types";
-
-// const items = [
-//   {
-//     id: 1,
-//     source: "/pins/pin1.jpeg",
-//   },
-//   {
-//     id: 2,
-//     source: "/pins/pin2.jpeg",
-//   },
-//   {
-//     id: 3,
-//     source: "/pins/pin3.jpeg",
-//   },
-//   {
-//     id: 4,
-//     source: "/pins/pin4.jpeg",
-//   },
-//   {
-//     id: 5,
-//     source: "/pins/pin5.jpeg",
-//   },
-//   {
-//     id: 6,
-//     source: "/pins/pin6.jpeg",
-//   },
-//   {
-//     id: 7,
-//     source: "/pins/pin7.jpeg",
-//   },
-//   {
-//     id: 8,
-//     source: "/pins/pin8.jpeg",
-//   },
-//   {
-//     id: 9,
-//     source: "/pins/pin9.jpeg",
-//   },
-//   {
-//     id: 10,
-//     source: "/pins/pin10.jpeg",
-//   },
-//   {
-//     id: 11,
-//     source: "/pins/pin11.jpeg",
-//   },
-//   {
-//     id: 12,
-//     source: "/pins/pin12.jpeg",
-//   },
-//   {
-//     id: 13,
-//     source: "/pins/pin13.jpeg",
-//   },
-//   {
-//     id: 14,
-//     source: "/pins/pin14.jpeg",
-//   },
-//   {
-//     id: 15,
-//     source: "/pins/pin15.jpeg",
-//   },
-//   {
-//     id: 16,
-//     source: "/pins/pin16.jpeg",
-//   },
-//   {
-//     id: 17,
-//     source: "/pins/pin17.jpeg",
-//   },
-//   {
-//     id: 18,
-//     source: "/pins/pin18.jpeg",
-//   },
-//   {
-//     id: 19,
-//     source: "/pins/pin19.jpeg",
-//   },
-//   {
-//     id: 20,
-//     source: "/pins/pin20.jpeg",
-//   },
-// ];
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import { toast } from "sonner";
 
 export default function Gallery({
   userId,
   galleryType,
 }: {
-  userId: string;
+  userId?: string;
   galleryType?: string;
 }) {
   const { searchText } = useSearchQueryContext();
@@ -159,7 +79,40 @@ export default function Gallery({
   );
 }
 
+async function savePost(pinId: string) {
+  const response = await axios.post(
+    `${import.meta.env.VITE_API_BASE_URL}/savedPins`,
+    {
+      pinId,
+    },
+    {
+      withCredentials: true,
+    }
+  );
+
+  if (response.status !== 201 && response.status !== 200) {
+    throw new Error("Unable to save or unsave pin");
+  }
+
+  return response.data;
+}
+
 function GalleryItem({ item }: { item: TPin }) {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: savePost,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["pins"] }),
+    onError: (error) => {
+      console.error(error.message);
+      toast.error(error.message);
+    },
+  });
+
+  function handleSaveBtnClick(pinId: string) {
+    mutation.mutate(pinId);
+  }
+
   return (
     <div className="rounded-lg mb-5 overflow-hidden cursor-pointer group relative">
       <Link to={`/pin/${item.id}`}>
@@ -178,24 +131,26 @@ function GalleryItem({ item }: { item: TPin }) {
             },
           ]}
         />
+      </Link>
+      <div className="hidden group-hover:flex flex-col items-end justify-between absolute w-full top-0 left-0 bg-black/30 h-full py-3 pr-3 transition-all duration-1000 pointer-events-none">
+        <div>
+          <button
+            onClick={() => handleSaveBtnClick(item.id)}
+            className="text-white bg-red-600 hover:bg-red-400 py-3 px-4 rounded-full font-semibold cursor-pointer pointer-events-auto"
+          >
+            {item.savedPins.length ? "Saved" : "Save"}
+          </button>
+        </div>
 
-        <div className="hidden group-hover:flex flex-col items-end justify-between absolute w-full top-0 left-0 bg-black/30 h-full py-3 pr-3 transition-all duration-1000">
-          <div>
-            <button className="text-white bg-red-600 py-3 px-4 rounded-full font-semibold cursor-pointer">
-              Save
-            </button>
-          </div>
-
-          <div className="flex gap-3">
+        {/* <div className="flex gap-3">
             <button className="bg-white p-1 rounded-full cursor-pointer">
               <img src="/general/share.svg" alt="share-pin-icon" />
             </button>
             <button className="bg-white p-1 rounded-full cursor-pointer">
               <img src="/general/more.svg" alt="more-options-icon" />
             </button>
-          </div>
-        </div>
-      </Link>
+          </div> */}
+      </div>
     </div>
   );
 }

@@ -26,7 +26,6 @@ export default function UserOptionsModal() {
       <li className="hover:bg-neutral-500 cursor-pointer py-1">
         <Link to={`/profile/${currentUser?.username}`}>Profile</Link>
       </li>
-      <li className="hover:bg-neutral-500 cursor-pointer py-1">Settings</li>
       <li>
         <button
           onClick={handleClick}

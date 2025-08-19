@@ -2,7 +2,6 @@ import { useState } from "react";
 import Gallery from "../components/Gallery";
 import { useParams } from "react-router";
 import useProfile from "../hooks/useProfile";
-import Boards from "../components/Boards";
 import useAuthentication from "../hooks/useAuthentication";
 import FollowButton from "../components/FollowButton";
 
@@ -12,13 +11,10 @@ type TFollowRecord = {
 };
 
 export default function ProfilePage() {
-  const [galleryType, setGalleryType] = useState("saved");
+  const [galleryType, setGalleryType] = useState("created");
   const { username } = useParams();
   const { data, isLoading, error } = useProfile(username);
   const { currentUser } = useAuthentication();
-
-  console.log(data);
-  console.log(currentUser);
 
   let isFollowing;
 
@@ -26,7 +22,6 @@ export default function ProfilePage() {
     isFollowing = data.user.followers.some((followRecord: TFollowRecord) => {
       return followRecord.followerId === currentUser?.id;
     });
-    console.log(isFollowing);
   }
 
   const activeTypeStyle = "border-b-3 border-black";
@@ -104,12 +99,14 @@ export default function ProfilePage() {
           >
             Created
           </button>
-          <button
-            onClick={handleClickType}
-            className={`cursor-pointer hover:text-neutral-400 ${galleryType === "saved" && activeTypeStyle} pb-1`}
-          >
-            Saved
-          </button>
+          {currentUser?.username === data.user.username ? (
+            <button
+              onClick={handleClickType}
+              className={`cursor-pointer hover:text-neutral-400 ${galleryType === "saved" && activeTypeStyle} pb-1`}
+            >
+              Saved
+            </button>
+          ) : null}
         </div>
 
         {galleryType === "created" && (

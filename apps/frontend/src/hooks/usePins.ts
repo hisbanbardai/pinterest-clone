@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 
 export default function usePins(
   searchText: string,
-  userId: string,
+  userId?: string,
   galleryType?: string | undefined
 ) {
   const LIMIT = 21;
@@ -26,11 +26,14 @@ export default function usePins(
   }: {
     pageParam: string | null;
     searchText: string;
-    userId: string;
-    galleryType: string | undefined;
+    userId?: string;
+    galleryType?: string;
   }) {
     const { data } = await axios.get(
-      `${import.meta.env.VITE_API_BASE_URL}/pins?limit=${LIMIT}&cursor=${pageParam}&search=${searchText}&userId=${userId || ""}&galleryType=${galleryType || ""}`
+      `${import.meta.env.VITE_API_BASE_URL}/pins?limit=${LIMIT}&cursor=${pageParam}&search=${searchText}&userId=${userId || ""}&galleryType=${galleryType || ""}`,
+      {
+        withCredentials: true,
+      }
     );
     return data;
   }

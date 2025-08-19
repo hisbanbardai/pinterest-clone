@@ -16,6 +16,7 @@ export type TPin = {
   updatedAt: string;
   userId: string;
   user: TUser;
+  savedPins: [];
 };
 
 export type TBoard = {

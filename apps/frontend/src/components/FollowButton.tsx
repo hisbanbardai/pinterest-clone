@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+import { toast } from "sonner";
 
 export default function FollowButton({
   isFollowing,
@@ -14,6 +15,10 @@ export default function FollowButton({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user", username] });
     },
+    onError(error) {
+      console.error(error.message);
+      toast.error(error.message);
+    },
   });
 
   async function handleFollow(username: string | undefined) {
@@ -24,6 +29,10 @@ export default function FollowButton({
         withCredentials: true,
       }
     );
+
+    if (response.status !== 200 && response.status !== 201) {
+      throw new Error("Unable to follow/unfollow the user");
+    }
 
     return response.data;
   }

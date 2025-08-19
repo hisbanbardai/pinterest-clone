@@ -4,9 +4,45 @@ import { Link } from "react-router";
 import Comments from "./Comments";
 import CommentForm from "./CommentForm";
 import usePinContext from "../hooks/usePinContext";
+import axios from "axios";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+
+async function savePost(pinId: string) {
+  const response = await axios.post(
+    `${import.meta.env.VITE_API_BASE_URL}/savedPins`,
+    {
+      pinId,
+    },
+    {
+      withCredentials: true,
+    }
+  );
+
+  if (response.status !== 201 && response.status !== 200) {
+    throw new Error("Unable to save or unsave pin");
+  }
+
+  return response.data;
+}
 
 export default function Pin() {
-  const { error, isLoading, pin, user } = usePinContext();
+  const { error, isLoading, pin, user, savedPinCount } = usePinContext();
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: savePost,
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["pin", pin.id] }),
+    onError: (error) => {
+      console.error(error.message);
+      toast.error(error.message);
+    },
+  });
+
+  function handleSaveBtnClick(pinId: string) {
+    mutation.mutate(pinId);
+  }
 
   if (error) {
     return <p className="text-red-500">An error occurred: {error.message}</p>;
@@ -51,10 +87,10 @@ export default function Pin() {
   }
 
   return (
-    <main className="max-h-screen mb-10">
-      <section className="lg:max-w-5xl lg:flex-row md:flex-col flex-col max-w-3xl flex justify-center mx-auto h-full">
+    <main className="mb-10">
+      <section className="lg:max-w-5xl lg:flex-row md:flex-col flex-col max-w-3xl flex justify-center mx-auto h-[600px]">
         <div className="flex gap-10 flex-1">
-          <div className="mt-4">
+          <div className="mt-4" hidden>
             <svg
               aria-hidden="true"
               aria-label=""
@@ -68,7 +104,7 @@ export default function Pin() {
             </svg>
           </div>
 
-          <div className="overflow-hidden flex-1 rounded-l-2xl h-full">
+          <div className="overflow-hidden flex-1 rounded-l-2xl">
             <Image
               urlEndpoint={import.meta.env.VITE_IK_URL_ENDPOINT}
               // src={"/pins/pin1.jpeg"}
@@ -83,29 +119,18 @@ export default function Pin() {
         <div className="flex-1 border-b border-t border-r rounded-r-2xl border-black/10 p-2 flex flex-col gap-8">
           <div className="flex justify-between">
             <div className="flex items-center gap-5 font-semibold">
-              <img
-                src="/general/react.svg"
-                alt="Love icon"
-                width={20}
-                className="cursor-pointer"
-              />
-              <span>273</span>
-              <img
-                src="/general/share.svg"
-                alt=""
-                width={20}
-                className="cursor-pointer"
-              />
-              <img
-                src="/general/more.svg"
-                alt=""
-                width={20}
-                className="cursor-pointer"
-              />
+              {savedPinCount ? (
+                <span className="font-normal text-sm">
+                  📌 {savedPinCount} people saved this pin
+                </span>
+              ) : null}
             </div>
             <div>
-              <button className="bg-red-600 text-white px-3 py-2 rounded-full cursor-pointer">
-                Save
+              <button
+                onClick={() => handleSaveBtnClick(pin.id)}
+                className="bg-red-600 text-white px-3 py-2 rounded-full cursor-pointer hover:bg-red-400"
+              >
+                {pin.savedPins.length ? "Saved" : "Save"}
               </button>
             </div>
           </div>

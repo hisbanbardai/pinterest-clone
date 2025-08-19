@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import EmojiPicker, { type EmojiClickData } from "emoji-picker-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 async function addComment(comment: { text: string; pinId: string }) {
   const response = await axios.post(
@@ -11,6 +12,10 @@ async function addComment(comment: { text: string; pinId: string }) {
       withCredentials: true,
     }
   );
+
+  if (response.status !== 201) {
+    throw new Error("Unable to add a comment");
+  }
 
   return response.data;
 }
@@ -24,6 +29,10 @@ export default function CommentForm({ pinId }: { pinId: string }) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["commentsByPin", pinId] });
       setInputComment("");
+    },
+    onError: (error) => {
+      console.error(error.message);
+      toast.error(error.message);
     },
   });
 
