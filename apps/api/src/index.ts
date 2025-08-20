@@ -88,4 +88,4 @@ app.get("/imagekitauth", authMiddleware, async function (req, res) {
 
 app.listen(PORT, () => console.log("Server running"));
 
-module.exports = app;
+export default app;
