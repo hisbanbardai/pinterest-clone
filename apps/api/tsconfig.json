@@ -7,6 +7,6 @@
     "allowImportingTsExtensions": true,
     "noEmit": true
   },
-  "exclude": ["node_modules"],
-  "include": ["."]
+  "exclude": ["node_modules", "dist", "prisma/seed.ts"],
+  "include": ["src"]
 }
