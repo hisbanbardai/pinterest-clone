@@ -3,7 +3,7 @@
   "compilerOptions": {
     "lib": ["ES2015"],
     "outDir": "./dist",
-    "rootDir": "./api",
+    "rootDir": "./src",
     "allowImportingTsExtensions": true,
     "noEmit": true
   },
