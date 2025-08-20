@@ -10,7 +10,8 @@
         "IMAGEKIT_URL_ENDPOINT",
         "IMAGEKIT_PUBLIC_KEY",
         "IMAGEKIT_PRIVATE_KEY",
-        "JWT_SECRET_KEY"
+        "JWT_SECRET_KEY",
+        "PORT"
       ],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "dependsOn": ["^build"],
