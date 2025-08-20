@@ -18,7 +18,7 @@ export default function AuthComponent({
 }: TAuthComponentProps) {
   return (
     <main className="flex justify-center items-center h-screen">
-      <div className="shadow-xl px-10 py-8 flex flex-col gap-5 rounded-2xl min-w-[450px]">
+      <div className="shadow-xl px-10 py-8 flex flex-col gap-5 rounded-2xl w-[350px] sm:min-w-[550px]">
         <Logo />
         <h1 className="text-2xl font-semibold text-center">{title}</h1>
         {children}

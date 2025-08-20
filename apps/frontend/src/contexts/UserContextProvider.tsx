@@ -1,15 +1,7 @@
 import axios from "axios";
-import { createContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import type { TUser } from "../lib/types";
-
-type TUserContext = {
-  isAuthenticated: boolean | null;
-  currentUser: TUser | null;
-  handleLogin: (userData: TUser) => void;
-  handleLogout: () => void;
-};
-
-export const UserContext = createContext<TUserContext | null>(null);
+import { UserContext } from "./UserContext";
 
 export default function UserContextProvider({
   children,

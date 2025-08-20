@@ -1,7 +1,6 @@
 import express, { Request, Response } from "express";
 import userRouter from "./routes/users.ts";
 import pinsRouter from "./routes/pins.ts";
-import boardsRouter from "./routes/boards.ts";
 import commentsRouter from "./routes/comments.ts";
 import followsRouter from "./routes/follows.ts";
 import savedPinsRouter from "./routes/savedPins.ts";
@@ -31,7 +30,6 @@ app.use(
 
 app.use("/users", userRouter);
 app.use("/pins", pinsRouter);
-app.use("/boards", boardsRouter);
 app.use("/comments", commentsRouter);
 app.use("/follows", followsRouter);
 app.use("/savedPins", savedPinsRouter);

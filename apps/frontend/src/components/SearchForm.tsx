@@ -9,7 +9,7 @@ export default function SearchForm() {
       <form className="w-full" onSubmit={handleFormSubmit}>
         <input
           type="text"
-          placeholder="Search"
+          placeholder="Search by title"
           className="w-full outline-none"
           ref={inputRef}
         />

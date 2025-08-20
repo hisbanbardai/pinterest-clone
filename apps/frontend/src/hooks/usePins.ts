@@ -67,8 +67,8 @@ export default function usePins(
       threshold: 0.25,
     };
 
-    function handleIntersect(entries) {
-      entries.forEach((entry) => {
+    function handleIntersect(entries: IntersectionObserverEntry[]) {
+      entries.forEach((entry: IntersectionObserverEntry) => {
         if (entry.isIntersecting && hasNextPage) {
           fetchNextPage();
         }

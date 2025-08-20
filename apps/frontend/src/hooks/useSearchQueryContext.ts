@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { SearchQueryContext } from "../contexts/SearchQueryContextProvider";
+import { SearchQueryContext } from "../contexts/SearchQueryContext";
 
 export default function useSearchQueryContext() {
   const context = useContext(SearchQueryContext);

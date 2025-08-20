@@ -16,7 +16,7 @@ export default function AccountButton() {
   }
 
   return (
-    <div className="hidden sm:block relative">
+    <div className=" sm:block relative">
       <button
         onClick={handleClick}
         className="bg-neutral-200 p-1 rounded-full cursor-pointer"

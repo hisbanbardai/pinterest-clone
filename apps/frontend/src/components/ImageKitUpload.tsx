@@ -12,7 +12,7 @@ const UploadExample = () => {
   // State to keep track of the current upload progress (percentage)
   const [progress, setProgress] = useState(0);
 
-  const [selectedFile, setSelectedFile] = useState();
+  const [selectedFile, setSelectedFile] = useState<File>();
 
   const [preview, setPreview] = useState("");
 
@@ -61,7 +61,7 @@ const UploadExample = () => {
     }
   };
 
-  function handleChange(e) {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (!e.target.files || e.target.files.length === 0) {
       setSelectedFile(undefined);
       return;

@@ -88,7 +88,7 @@ export default function Pin() {
 
   return (
     <main className="mb-10">
-      <section className="lg:max-w-5xl lg:flex-row md:flex-col flex-col max-w-3xl flex justify-center mx-auto h-[600px]">
+      <section className="lg:max-w-5xl lg:flex-row md:flex-col flex-col max-w-3xl flex justify-center mx-auto ">
         <div className="flex gap-10 flex-1">
           <div className="mt-4" hidden>
             <svg
@@ -133,6 +133,10 @@ export default function Pin() {
                 {pin.savedPins.length ? "Saved" : "Save"}
               </button>
             </div>
+          </div>
+
+          <div>
+            <h1 className="font-bold text-2xl">{pin.title}</h1>
           </div>
 
           <div className="flex items-center text-[13px] gap-2">

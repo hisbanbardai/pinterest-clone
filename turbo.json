@@ -3,6 +3,15 @@
   "ui": "tui",
   "tasks": {
     "build": {
+      "env": [
+        "VITE_IK_URL_ENDPOINT",
+        "VITE_API_BASE_URL",
+        "DATABASE_URL",
+        "IMAGEKIT_URL_ENDPOINT",
+        "IMAGEKIT_PUBLIC_KEY",
+        "IMAGEKIT_PRIVATE_KEY",
+        "JWT_SECRET_KEY"
+      ],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "dependsOn": ["^build"],
       "outputs": [

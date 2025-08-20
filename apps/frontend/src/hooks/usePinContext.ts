@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { PinContext } from "../contexts/PinContextProvider";
+import { PinContext } from "../contexts/PinContext";
 
 export default function usePinContext() {
   const context = useContext(PinContext);
