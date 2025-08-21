@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
-import prisma from "../lib/prisma.ts";
+import prisma from "../lib/prisma.js";
 import { createPinSchema } from "@repo/zod/types";
-import { authMiddleware } from "../middleware/auth.ts";
+import { authMiddleware } from "../middleware/auth.js";
 import { Prisma } from "@prisma/client";
 
 const router = express.Router();

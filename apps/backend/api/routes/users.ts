@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
-import prisma from "../lib/prisma.ts";
+import prisma from "../lib/prisma.js";
 import { signinSchema, signupSchema } from "@repo/zod/types";
-import { hashPassword, verifyPassword } from "../lib/passwordHashing.ts";
+import { hashPassword, verifyPassword } from "../lib/passwordHashing.js";
 import jwt from "jsonwebtoken";
 
 const router = express.Router();

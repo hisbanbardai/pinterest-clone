@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
-import prisma from "../lib/prisma.ts";
-import { authMiddleware } from "../middleware/auth.ts";
+import prisma from "../lib/prisma.js";
+import { authMiddleware } from "../middleware/auth.js";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 const router = express.Router();
