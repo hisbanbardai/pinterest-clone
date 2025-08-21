@@ -1,6 +1,5 @@
 import express, { Request, Response } from "express";
-import prisma from "../lib/prisma.ts";
-import { Prisma } from "@prisma/client";
+import prisma, { Prisma } from "../lib/prisma.ts";
 import { createPinSchema } from "@repo/zod/types";
 import { authMiddleware } from "../middleware/auth.ts";
 
