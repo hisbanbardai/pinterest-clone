@@ -2,13 +2,15 @@
   "name": "@repo/zod",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc"
   },
   "exports": {
-    "./*": "./dist/*.js"
+    "./*": {
+      "types": "./src/*.ts",
+      "default": "./dist/*.js"
+    }
   },
   "keywords": [],
   "author": "",
@@ -16,5 +18,10 @@
   "type": "module",
   "dependencies": {
     "zod": "^3.25.67"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "^0.0.0",
+    "@repo/typescript-config": "^0.0.0",
+    "typescript": "^5.8.2"
   }
 }
