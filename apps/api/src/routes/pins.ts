@@ -101,7 +101,7 @@ router.get("/:id", authMiddleware, async (req: Request, res: Response) => {
     const savedPinCount = existingPin.savedPins.length;
 
     const savedPinsByUser = existingPin.savedPins.filter(
-      (pin) => pin.userId === userId
+      (pin: { pinId: string; userId: string }) => pin.userId === userId
     );
 
     const pin = {

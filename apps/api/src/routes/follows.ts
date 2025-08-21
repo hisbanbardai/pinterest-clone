@@ -34,9 +34,11 @@ router.post(
           return;
         }
 
-        const isFollowing = followingUser?.followers.some((followRecord) => {
-          return followRecord.followerId === followerUserId;
-        });
+        const isFollowing = followingUser?.followers.some(
+          (followRecord: { followerId: string; followingId: string }) => {
+            return followRecord.followerId === followerUserId;
+          }
+        );
 
         if (isFollowing) {
           const deletedFollowRecord = await prisma.follower_Following.delete({
