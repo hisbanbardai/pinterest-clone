@@ -1,14 +1,14 @@
 import express, { Request, Response } from "express";
 import userRouter from "./routes/users.js";
-import pinsRouter from "./routes/pins.ts";
-import commentsRouter from "./routes/comments.ts";
-import followsRouter from "./routes/follows.ts";
-import savedPinsRouter from "./routes/savedPins.ts";
+import pinsRouter from "./routes/pins.js";
+import commentsRouter from "./routes/comments.js";
+import followsRouter from "./routes/follows.js";
+import savedPinsRouter from "./routes/savedPins.js";
 import ImageKit from "imagekit";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import prisma from "./lib/prisma.ts";
-import { authMiddleware } from "./middleware/auth.ts";
+import prisma from "./lib/prisma.js";
+import { authMiddleware } from "./middleware/auth.js";
 
 const app = express();
 const PORT = process.env.PORT || 3002;
