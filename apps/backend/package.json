@@ -2,7 +2,7 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.ts",
   "tsup": {
     "entry": [
       "api/index.ts"
@@ -13,7 +13,7 @@
     "format": "esm"
   },
   "scripts": {
-    "start": "node dist/index.js",
+    "start": "node api/index.ts",
     "dev": "tsup --watch --onSuccess  \"node --env-file=.env dist/index.js\"",
     "build": "tsc --noEmit && tsup",
     "check-types": "tsc --noEmit",
