@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
-import prisma, { Prisma } from "../lib/prisma.ts";
+import prisma from "../lib/prisma.ts";
 import { authMiddleware } from "../middleware/auth.ts";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 const router = express.Router();
 
@@ -57,7 +58,7 @@ router.post("/", authMiddleware, async (req: Request, res: Response) => {
   } catch (error) {
     console.error(error);
 
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    if (error instanceof PrismaClientKnownRequestError) {
       // The .code property can be accessed in a type-safe manner
       if (error.code === "P2003") {
         res.status(400).json({
