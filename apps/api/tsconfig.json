@@ -3,10 +3,10 @@
   "compilerOptions": {
     "lib": ["ES2015"],
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": "api",
     "allowImportingTsExtensions": true,
     "noEmit": true
   },
   "exclude": ["node_modules", "dist", "prisma/seed.ts"],
-  "include": ["src"]
+  "include": ["api"]
 }
