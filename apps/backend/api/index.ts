@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import userRouter from "./routes/users.ts";
+import userRouter from "./routes/users.js";
 import pinsRouter from "./routes/pins.ts";
 import commentsRouter from "./routes/comments.ts";
 import followsRouter from "./routes/follows.ts";
