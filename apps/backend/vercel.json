@@ -8,9 +8,14 @@
   ],
   "headers": [
     {
-      "key": "Access-Control-Allow-Origin",
-      "value": "https://pinterest-clone-frontend-v1.vercel.app"
-    },
-    { "key": "Access-Control-Allow-Credentials", "value": "true" }
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "https://pinterest-clone-frontend-v1.vercel.app"
+        },
+        { "key": "Access-Control-Allow-Credentials", "value": "true" }
+      ]
+    }
   ]
 }
