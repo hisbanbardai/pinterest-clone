@@ -54,7 +54,11 @@ router.post("/signup", async (req: Request, res: Response): Promise<any> => {
       secret
     );
 
-    res.cookie("token", token);
+    res.cookie("token", token, {
+      sameSite: "none",
+      secure: true,
+      httpOnly: true,
+    });
 
     //delete password property before returning the user data
     if (newUser) {
@@ -113,7 +117,11 @@ router.post("/signin", async (req: Request, res: Response) => {
     );
 
     //add cookie
-    res.cookie("token", token);
+    res.cookie("token", token, {
+      sameSite: "none",
+      secure: true,
+      httpOnly: true,
+    });
 
     //delete password property before returning the user data
     if (existingUser) {
