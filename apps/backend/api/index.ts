@@ -24,7 +24,7 @@ app.use(express.json());
 app.use(
   cors({
     credentials: true,
-    origin: "https://pinterest-clone-frontend-v1.vercel.app",
+    origin: process.env.FRONTEND_URL,
   })
 );
 
