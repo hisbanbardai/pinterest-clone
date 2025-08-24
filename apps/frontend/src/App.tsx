@@ -6,7 +6,6 @@ import PinDetailsPage from "./pages/PinDetailsPage";
 import SigninPage from "./pages/SigninPage";
 import SignupPage from "./pages/SignupPage";
 import HomePage from "./pages/HomePage";
-import ImageKitUpload from "./components/ImageKitUpload";
 import SearchQueryContextProvider from "./contexts/SearchQueryContextProvider";
 import { Toaster } from "sonner";
 import ProtectedRoutes from "./components/ProtectedRoutes";
