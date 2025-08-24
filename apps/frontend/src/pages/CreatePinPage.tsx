@@ -135,7 +135,7 @@ export default function CreatePinPage() {
           signature,
           publicKey,
           file: selectedFile,
-          folder: "/test",
+          folder: "/pins",
           fileName: selectedFile.name, // Optionally set a custom file name
           // Progress callback to update upload progress state
           onProgress: (event) => {
