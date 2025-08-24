@@ -26,7 +26,6 @@ function App() {
                   <Route path="/create-pin" element={<CreatePinPage />} />
                   <Route path="/profile/:username" element={<ProfilePage />} />
                   <Route path="/pin/:id" element={<PinDetailsPage />} />
-                  <Route path="/test" element={<ImageKitUpload />} />
                 </Route>
               </Route>
               <Route element={<PublicRoutes />}>
